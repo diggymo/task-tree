@@ -2,6 +2,7 @@ export interface TaskNode {
   id: string;
   text: string;
   children: TaskNode[];
+  completed?: boolean;
 }
 
 export interface TaskRoot {
@@ -48,6 +49,7 @@ export interface TaskNodeProps {
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
   onDelete: (taskId: string) => void;
+  onToggleComplete: (taskId: string) => void;
   inputRefs: React.MutableRefObject<Record<string, HTMLTextAreaElement | null>>;
 }
 

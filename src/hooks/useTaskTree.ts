@@ -187,6 +187,17 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     }
   }, [root, onDataChange]);
 
+  const handleToggleComplete = useCallback((taskId: string) => {
+    const result = findTask(root, taskId);
+    if (result) {
+      setRoot(prev => {
+        const newRoot = updateTask(prev, taskId, { completed: !result.node.completed }) as TaskRoot;
+        onDataChange?.(newRoot);
+        return newRoot;
+      });
+    }
+  }, [root, onDataChange]);
+
   const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, taskId: string) => {
     if (e.metaKey || e.ctrlKey) {
       e.preventDefault();
@@ -288,6 +299,7 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleTextChange,
     handleKeyDown,
     handleDelete,
+    handleToggleComplete,
     handleDragStart,
     handleDragOver,
     handleDragLeave,

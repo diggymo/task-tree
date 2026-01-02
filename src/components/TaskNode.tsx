@@ -18,6 +18,7 @@ const TaskNode = React.memo(function TaskNode({
   onDragLeave,
   onDrop,
   onDelete,
+  onToggleComplete,
   inputRefs
 }: TaskNodeProps) {
   const isFocused = focusedId === task.id;
@@ -42,7 +43,7 @@ const TaskNode = React.memo(function TaskNode({
           </div>
         )}
         <div
-          className={`task-node ${isFocused ? 'focused' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? `drag-over drag-${dragPosition}` : ''}`}
+          className={`task-node ${isFocused ? 'focused' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? `drag-over drag-${dragPosition}` : ''} ${task.completed ? 'completed' : ''}`}
           draggable
           onDragStart={(e) => onDragStart(e, task.id)}
           onDragOver={(e) => onDragOver(e, task.id)}
@@ -61,6 +62,15 @@ const TaskNode = React.memo(function TaskNode({
             className="task-input"
             rows={1}
           />
+          <button
+            className="complete-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleComplete(task.id);
+            }}
+          >
+            {task.completed ? '✓' : ''}
+          </button>
           {isFocused && (
             <button
               className="delete-btn"
@@ -94,6 +104,7 @@ const TaskNode = React.memo(function TaskNode({
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
                 onDelete={onDelete}
+                onToggleComplete={onToggleComplete}
                 inputRefs={inputRefs}
               />
             ))}
@@ -158,6 +169,23 @@ const TaskNode = React.memo(function TaskNode({
           border-color: #3b82f6;
           box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3),
                       0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .task-node.completed {
+          background: linear-gradient(145deg, #166534 0%, #15803d 100%);
+          border-color: #22c55e;
+        }
+
+        .task-node.completed:hover {
+          border-color: #4ade80;
+          box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .task-node.completed.focused {
+          border-color: #22c55e;
+          box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3),
+                      0 4px 20px rgba(34, 197, 94, 0.3);
         }
 
         .task-node.dragging {
@@ -253,6 +281,34 @@ const TaskNode = React.memo(function TaskNode({
         .delete-btn:hover {
           background: linear-gradient(145deg, #f87171 0%, #ef4444 100%);
           transform: scale(1.1);
+        }
+
+        .complete-btn {
+          width: 20px;
+          height: 20px;
+          min-width: 20px;
+          border-radius: 4px;
+          background: transparent;
+          border: 2px solid #64748b;
+          color: white;
+          font-size: 12px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+          margin-left: 8px;
+          margin-top: 2px;
+        }
+
+        .complete-btn:hover {
+          border-color: #22c55e;
+          background: rgba(34, 197, 94, 0.1);
+        }
+
+        .task-node.completed .complete-btn {
+          background: #22c55e;
+          border-color: #22c55e;
         }
       `}</style>
     </div>

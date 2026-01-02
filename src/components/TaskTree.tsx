@@ -87,6 +87,7 @@ export default function TaskTree({
               onDragLeave={taskTree.handleDragLeave}
               onDrop={taskTree.handleDrop}
               onDelete={taskTree.handleDelete}
+              onToggleComplete={taskTree.handleToggleComplete}
               inputRefs={taskTree.inputRefs}
             />
           ))}
