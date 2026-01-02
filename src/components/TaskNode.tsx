@@ -1,5 +1,6 @@
 import React from 'react';
 import type { TaskNodeProps } from '../types/task';
+import URLPreview from './URLPreview';
 
 const TaskNode = React.memo(function TaskNode({
   task,
@@ -83,6 +84,7 @@ const TaskNode = React.memo(function TaskNode({
             </button>
           )}
         </div>
+        <URLPreview text={task.text} />
         {task.children.length > 0 && (
           <div className="children-container">
             {task.children.map((child, index) => (

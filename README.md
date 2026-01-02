@@ -13,6 +13,9 @@
 - キーボードショートカットによる高速操作
 - キャンバスのパン・ズーム
 - データの自動保存・インポート/エクスポート
+- **URLプレビュー**: タスクにURLを貼ると自動的に追加情報を表示
+  - 現在対応: Slack メッセージ
+  - 今後対応予定: GitHub, Jira など
 
 ## セットアップ
 
@@ -29,6 +32,25 @@ pnpm install
 ```
 
 ## 開発
+
+### URLプレビュー機能の設定
+
+Slack メッセージのプレビューを表示するには、Slack Bot トークンが必要です：
+
+1. [Slack API](https://api.slack.com/apps)でアプリを作成
+2. Bot Token Scopes に `channels:history` と `groups:history` を追加
+3. ワークスペースにインストール
+4. 環境変数 `SLACK_BOT_TOKEN` を設定
+
+```bash
+# macOS/Linux
+export SLACK_BOT_TOKEN="xoxb-your-token-here"
+
+# Windows (PowerShell)
+$env:SLACK_BOT_TOKEN="xoxb-your-token-here"
+```
+
+### 開発サーバー起動
 
 ```bash
 # フロントエンドのみ (Vite dev server)
