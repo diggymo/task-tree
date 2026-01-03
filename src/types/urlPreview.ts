@@ -24,10 +24,10 @@ export interface GitHubPullRequestPreview {
   number: number;
   state: 'open' | 'closed' | 'merged';
   isDraft: boolean;
-  user: GitHubUser;  // 作成者
-  assignee: GitHubUser | null;  // アサイナー（最初の1人）
+  user: GitHubUser; // 作成者
+  assignee: GitHubUser | null; // アサイナー（最初の1人）
   created_at: string;
-  repository: string;  // "owner/repo"
+  repository: string; // "owner/repo"
   url: string;
 }
 

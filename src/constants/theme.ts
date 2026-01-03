@@ -87,11 +87,16 @@ export const fontSize = {
 // デザイントークン: シャドウ
 export const shadows = {
   // タスクノード
-  taskNode: '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-  taskNodeHover: '0 4px 20px rgba(96, 165, 250, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-  taskNodeFocused: '0 0 0 3px rgba(59, 130, 246, 0.3), 0 4px 20px rgba(59, 130, 246, 0.3)',
-  taskNodeCompletedHover: '0 4px 20px rgba(34, 197, 94, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-  taskNodeCompletedFocused: '0 0 0 3px rgba(34, 197, 94, 0.3), 0 4px 20px rgba(34, 197, 94, 0.3)',
+  taskNode:
+    '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+  taskNodeHover:
+    '0 4px 20px rgba(96, 165, 250, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+  taskNodeFocused:
+    '0 0 0 3px rgba(59, 130, 246, 0.3), 0 4px 20px rgba(59, 130, 246, 0.3)',
+  taskNodeCompletedHover:
+    '0 4px 20px rgba(34, 197, 94, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+  taskNodeCompletedFocused:
+    '0 0 0 3px rgba(34, 197, 94, 0.3), 0 4px 20px rgba(34, 197, 94, 0.3)',
 
   // ボタン
   deleteButton: '0 2px 8px rgba(239, 68, 68, 0.4)',
@@ -109,8 +114,10 @@ export const gradients = {
   deleteButtonHover: 'linear-gradient(145deg, #f87171 0%, #ef4444 100%)',
 
   // 背景
-  containerBackground: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-  headerBackground: 'linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%)',
+  containerBackground:
+    'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
+  headerBackground:
+    'linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%)',
 } as const;
 
 // デザイントークン: トランジション
@@ -127,4 +134,5 @@ export const grid = {
 } as const;
 
 // フォントファミリー
-export const fontFamily = "'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif";
+export const fontFamily =
+  "'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif";

@@ -9,14 +9,20 @@ export default function ZoomIndicator({
   zoom,
   onZoomIn,
   onZoomOut,
-  onReset
+  onReset,
 }: ZoomIndicatorProps) {
   return (
     <div className="zoom-indicator">
-      <button onClick={onZoomOut}>−</button>
+      <button type="button" onClick={onZoomOut}>
+        −
+      </button>
       <span>{Math.round(zoom * 100)}%</span>
-      <button onClick={onZoomIn}>+</button>
-      <button onClick={onReset} className="reset">リセット</button>
+      <button type="button" onClick={onZoomIn}>
+        +
+      </button>
+      <button type="button" onClick={onReset} className="reset">
+        リセット
+      </button>
       <style>{`
         .zoom-indicator {
           position: fixed;

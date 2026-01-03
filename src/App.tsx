@@ -1,11 +1,11 @@
-import { useState, useCallback } from 'react';
-import type { SavedData, TaskRoot, ViewOffset } from './types/task';
-import { createInitialData } from './types/task';
+import { useCallback, useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import RestoreDialog from './components/RestoreDialog';
 import TaskTree from './components/TaskTree';
 import { useDebouncedSave } from './hooks/useDebouncedSave';
 import { exportToFile, importFromFile } from './hooks/useFileStorage';
+import type { SavedData, TaskRoot, ViewOffset } from './types/task';
+import { createInitialData } from './types/task';
 
 // 単一のstateオブジェクトとして状態を定義
 type AppState =
@@ -22,14 +22,22 @@ function App() {
       setAppState({ phase: 'choose', savedData: data });
     } else {
       const initial = createInitialData();
-      setAppState({ phase: 'ready', currentData: initial, initialData: initial });
+      setAppState({
+        phase: 'ready',
+        currentData: initial,
+        initialData: initial,
+      });
     }
   };
 
   const handleRestore = () => {
     if (appState.phase === 'choose') {
       const { savedData } = appState;
-      setAppState({ phase: 'ready', currentData: savedData, initialData: savedData });
+      setAppState({
+        phase: 'ready',
+        currentData: savedData,
+        initialData: savedData,
+      });
     }
   };
 
@@ -38,19 +46,22 @@ function App() {
     setAppState({ phase: 'ready', currentData: initial, initialData: initial });
   };
 
-  const handleDataChange = useCallback((root: TaskRoot, viewOffset: ViewOffset, zoom: number) => {
-    const newData: SavedData = {
-      root,
-      viewOffset,
-      zoom,
-      savedAt: new Date().toISOString()
-    };
-    setAppState(prev => {
-      if (prev.phase !== 'ready') return prev;
-      return { ...prev, currentData: newData };
-    });
-    scheduleSave(newData);
-  }, [scheduleSave]);
+  const handleDataChange = useCallback(
+    (root: TaskRoot, viewOffset: ViewOffset, zoom: number) => {
+      const newData: SavedData = {
+        root,
+        viewOffset,
+        zoom,
+        savedAt: new Date().toISOString(),
+      };
+      setAppState((prev) => {
+        if (prev.phase !== 'ready') return prev;
+        return { ...prev, currentData: newData };
+      });
+      scheduleSave(newData);
+    },
+    [scheduleSave],
+  );
 
   const handleExport = useCallback(async () => {
     if (appState.phase === 'ready') {
@@ -61,13 +72,19 @@ function App() {
   const handleImport = useCallback(async () => {
     const imported = await importFromFile();
     if (imported) {
-      const confirmed = window.confirm('インポートすると現在のデータは上書きされます。続行しますか？');
+      const confirmed = window.confirm(
+        'インポートすると現在のデータは上書きされます。続行しますか？',
+      );
       if (confirmed) {
         scheduleSave(imported);
         // Force re-render by temporarily transitioning through loading
         setAppState({ phase: 'loading' });
         setTimeout(() => {
-          setAppState({ phase: 'ready', currentData: imported, initialData: imported });
+          setAppState({
+            phase: 'ready',
+            currentData: imported,
+            initialData: imported,
+          });
         }, 500);
       }
     }

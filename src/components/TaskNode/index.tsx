@@ -1,13 +1,17 @@
 import React, { useMemo } from 'react';
-import type { TaskNode as TaskNodeType } from '../../types/task';
 import { useTaskContext } from '../../contexts/TaskContext';
+import type { TaskNode as TaskNodeType } from '../../types/task';
+import {
+  getCompletionStats,
+  hasChildren,
+  isTaskCompleted,
+} from '../../utils/taskOperations';
 import URLPreview from '../URLPreview';
-import { isTaskCompleted, hasChildren, getCompletionStats } from '../../utils/taskOperations';
-import { TaskConnector } from './TaskConnector';
-import { TaskInput } from './TaskInput';
+import { taskNodeStyles } from './styles';
 import { TaskActions } from './TaskActions';
 import { TaskChildren } from './TaskChildren';
-import { taskNodeStyles } from './styles';
+import { TaskConnector } from './TaskConnector';
+import { TaskInput } from './TaskInput';
 
 // 簡素化されたProps（Contextを使用するため）
 interface TaskNodeProps {
@@ -21,7 +25,7 @@ const TaskNode = React.memo(function TaskNode({
   task,
   depth = 0,
   isFirst = false,
-  isLast = false
+  isLast = false,
 }: TaskNodeProps) {
   // Contextから全ての状態とハンドラを取得
   const {
@@ -42,7 +46,7 @@ const TaskNode = React.memo(function TaskNode({
     onAddChild,
     onTouchDragStart,
     onTouchDragMove,
-    onTouchDragEnd
+    onTouchDragEnd,
   } = useTaskContext();
 
   const isFocused = focusedId === task.id;
@@ -58,7 +62,8 @@ const TaskNode = React.memo(function TaskNode({
   const progressStyle = useMemo(() => {
     if (!isParent || !stats) return undefined;
 
-    const progress = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
+    const progress =
+      stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
 
     if (progress === 0) return undefined;
 
@@ -66,7 +71,7 @@ const TaskNode = React.memo(function TaskNode({
     // 完了時の背景色と同じ色系統を使用
     const greenColor = isCompleted ? '#166534' : '#15803d';
     return {
-      background: `linear-gradient(to left, ${greenColor} ${progress}%, transparent ${progress}%)`
+      background: `linear-gradient(to left, ${greenColor} ${progress}%, transparent ${progress}%)`,
     };
   }, [isParent, stats, isCompleted]);
 
@@ -75,15 +80,15 @@ const TaskNode = React.memo(function TaskNode({
     isFocused && 'focused',
     isDragging && 'dragging',
     isDragOver && `drag-over drag-${dragPosition}`,
-    isCompleted && 'completed'
-  ].filter(Boolean).join(' ');
+    isCompleted && 'completed',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className="task-branch">
       <div className="task-row">
-        {depth > 0 && (
-          <TaskConnector isFirst={isFirst} isLast={isLast} />
-        )}
+        {depth > 0 && <TaskConnector isFirst={isFirst} isLast={isLast} />}
         <div
           className={nodeClassName}
           data-task-id={task.id}
@@ -99,7 +104,9 @@ const TaskNode = React.memo(function TaskNode({
           <div
             className="drag-handle"
             onTouchStart={(e) => onTouchDragStart(e, task.id)}
-          >⋮⋮</div>
+          >
+            ⋮⋮
+          </div>
           <TaskInput
             taskId={task.id}
             text={task.text}
@@ -111,6 +118,7 @@ const TaskNode = React.memo(function TaskNode({
           />
           {isFocused && (
             <button
+              type="button"
               className="add-child-btn"
               onClick={(e) => {
                 e.stopPropagation();

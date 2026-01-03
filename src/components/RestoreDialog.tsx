@@ -6,7 +6,11 @@ interface RestoreDialogProps {
   onStartFresh: () => void;
 }
 
-export default function RestoreDialog({ savedData, onRestore, onStartFresh }: RestoreDialogProps) {
+export default function RestoreDialog({
+  savedData,
+  onRestore,
+  onStartFresh,
+}: RestoreDialogProps) {
   return (
     <div className="restore-dialog-overlay">
       <div className="restore-dialog">
@@ -18,8 +22,12 @@ export default function RestoreDialog({ savedData, onRestore, onStartFresh }: Re
           </p>
         )}
         <div className="dialog-buttons">
-          <button onClick={onRestore} className="btn-restore">復元する</button>
-          <button onClick={onStartFresh} className="btn-fresh">新規作成</button>
+          <button type="button" onClick={onRestore} className="btn-restore">
+            復元する
+          </button>
+          <button type="button" onClick={onStartFresh} className="btn-fresh">
+            新規作成
+          </button>
         </div>
       </div>
       <style>{`

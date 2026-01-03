@@ -39,14 +39,14 @@ export const initialTasks: TaskRoot = {
     {
       id: 'initial-task',
       text: '新しいタスク',
-      children: []
-    }
-  ]
+      children: [],
+    },
+  ],
 };
 
 export const createInitialData = (): SavedData => ({
   root: initialTasks,
   viewOffset: { x: 0, y: 0 },
   zoom: 1,
-  savedAt: new Date().toISOString()
+  savedAt: new Date().toISOString(),
 });

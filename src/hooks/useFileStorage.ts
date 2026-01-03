@@ -90,7 +90,9 @@ export const exportToFile = async (data: SavedData): Promise<boolean> => {
   if (isWebMode) {
     // Web mode: use Blob and download link
     try {
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json',
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -146,7 +148,11 @@ export const importFromFile = async (): Promise<SavedData | null> => {
           const data = JSON.parse(content) as SavedData;
 
           // Validate the imported data structure
-          if (!data.root || !data.root.id || !Array.isArray(data.root.children)) {
+          if (
+            !data.root ||
+            !data.root.id ||
+            !Array.isArray(data.root.children)
+          ) {
             throw new Error('Invalid file format');
           }
 
