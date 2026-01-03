@@ -67,6 +67,13 @@ export default function ZoomIndicator({
           font-size: 11px;
           margin-left: 4px;
         }
+
+        @media (max-width: 480px) {
+          .zoom-indicator {
+            bottom: 70px;
+            right: 10px;
+          }
+        }
       `}</style>
     </div>
   );

@@ -112,6 +112,13 @@ export default function SaveIndicator({
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+
+        @media (max-width: 480px) {
+          .save-indicator {
+            bottom: 20px;
+            left: 10px;
+          }
+        }
       `}</style>
     </div>
   );
