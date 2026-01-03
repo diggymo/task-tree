@@ -14,8 +14,8 @@
 - キャンバスのパン・ズーム
 - データの自動保存・インポート/エクスポート
 - **URLプレビュー**: タスクにURLを貼ると自動的に追加情報を表示
-  - 現在対応: Slack メッセージ
-  - 今後対応予定: GitHub, Jira など
+  - 現在対応: Slack メッセージ、GitHub Pull Request
+  - 今後対応予定: Jira など
 
 ## セットアップ
 
@@ -35,6 +35,8 @@ pnpm install
 
 ### URLプレビュー機能の設定
 
+#### Slack メッセージプレビュー
+
 Slack メッセージのプレビューを表示するには、Slack Bot トークンが必要です：
 
 1. [Slack API](https://api.slack.com/apps)でアプリを作成
@@ -49,6 +51,26 @@ export SLACK_BOT_TOKEN="xoxb-your-token-here"
 # Windows (PowerShell)
 $env:SLACK_BOT_TOKEN="xoxb-your-token-here"
 ```
+
+#### GitHub Pull Request プレビュー
+
+GitHub Pull Requestのプレビューを表示するには、GitHub CLI (`gh`)が必要です：
+
+```bash
+# インストール (macOS)
+brew install gh
+
+# インストール (Windows)
+winget install GitHub.cli
+
+# インストール (Linux - Debian/Ubuntu)
+sudo apt install gh
+
+# 認証
+gh auth login
+```
+
+認証が完了すれば、環境変数の設定は不要です。`gh`コマンドが自動的に認証情報を使用します。
 
 ### 開発サーバー起動
 

@@ -13,9 +13,11 @@ function isSlackURL(url: string): boolean {
   return /https:\/\/[^\/]+\.slack\.com\/archives\/[^\/]+\/p\d+/.test(url);
 }
 
-// GitHubのURL (将来実装)
+// GitHubのPull Request URLを検出する
+// 形式: https://github.com/{owner}/{repo}/pull/{number}
+// 例: https://github.com/facebook/react/pull/12345
 function isGitHubURL(url: string): boolean {
-  return url.includes('github.com');
+  return /https:\/\/github\.com\/[^\/]+\/[^\/]+\/pull\/\d+/.test(url);
 }
 
 // JiraのURL (将来実装)
@@ -60,5 +62,25 @@ export function parseSlackURL(url: string): SlackURLParts | null {
     workspace,
     channelId,
     timestamp
+  };
+}
+
+// GitHubのPull Request URLからリポジトリ情報をパースする
+export interface GitHubPRURLParts {
+  owner: string;
+  repo: string;
+  number: number;
+}
+
+export function parseGitHubPRURL(url: string): GitHubPRURLParts | null {
+  const match = url.match(/https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)/);
+  if (!match) return null;
+
+  const [, owner, repo, numberStr] = match;
+
+  return {
+    owner,
+    repo,
+    number: parseInt(numberStr, 10)
   };
 }

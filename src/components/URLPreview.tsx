@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { detectURLsInText } from '../utils/urlDetection';
 import { useURLPreview } from '../hooks/useURLPreview';
 import SlackMessagePreview from './previews/SlackMessagePreview';
-import type { SlackMessagePreview as SlackMessagePreviewData } from '../types/urlPreview';
+import GitHubPRPreview from './previews/GitHubPRPreview';
+import type { SlackMessagePreview as SlackMessagePreviewData, GitHubPullRequestPreview } from '../types/urlPreview';
 
 interface URLPreviewProps {
   text: string;
@@ -12,8 +13,8 @@ const URLPreview: React.FC<URLPreviewProps> = ({ text }) => {
   // テキストから最初のサポートされているURLを取得
   const urlInfo = useMemo(() => {
     const urls = detectURLsInText(text);
-    // 現在はSlackのみサポート
-    const supportedUrl = urls.find(u => u.type === 'slack');
+    // SlackとGitHubに対応
+    const supportedUrl = urls.find(u => u.type === 'slack' || u.type === 'github');
     return supportedUrl || null;
   }, [text]);
 
@@ -97,9 +98,13 @@ const URLPreview: React.FC<URLPreviewProps> = ({ text }) => {
     return <SlackMessagePreview data={data as SlackMessagePreviewData} />;
   }
 
+  if (data.type === 'github') {
+    return <GitHubPRPreview data={data as GitHubPullRequestPreview} />;
+  }
+
   // 将来的に他のサービスのプレビューを追加
-  // if (data.type === 'github') {
-  //   return <GitHubPreview data={data} />;
+  // if (data.type === 'jira') {
+  //   return <JiraPreview data={data} />;
   // }
 
   return null;

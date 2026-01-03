@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import type { URLPreviewData, URLPreviewState } from '../types/urlPreview';
 import { parseSlackURL } from '../utils/urlDetection';
+import { useGitHubPR } from './useGitHubPR';
 
 interface SlackMessageResponse {
   user: string;
@@ -15,6 +16,8 @@ export function useURLPreview(url: string | null, type: string) {
     data: null,
     error: null
   });
+
+  const { fetchGitHubPR } = useGitHubPR();
 
   const fetchSlackMessage = useCallback(async (url: string): Promise<URLPreviewData | null> => {
     const parts = parseSlackURL(url);
@@ -44,9 +47,10 @@ export function useURLPreview(url: string | null, type: string) {
 
       if (type === 'slack') {
         data = await fetchSlackMessage(url);
+      } else if (type === 'github') {
+        data = await fetchGitHubPR(url);
       }
       // 将来的に他のサービスをここに追加
-      // else if (type === 'github') { ... }
       // else if (type === 'jira') { ... }
 
       if (data) {
@@ -62,7 +66,7 @@ export function useURLPreview(url: string | null, type: string) {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-  }, [fetchSlackMessage]);
+  }, [fetchSlackMessage, fetchGitHubPR]);
 
   useEffect(() => {
     if (url && type !== 'unknown') {

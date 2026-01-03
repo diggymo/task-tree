@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::env;
+use std::process::Command;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SlackMessage {
@@ -64,12 +65,65 @@ async fn fetch_slack_message(
     Ok(message)
 }
 
+// GitHub Pull Request の型定義
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GitHubUser {
+    pub login: String,
+    #[serde(rename = "avatarUrl")]
+    pub avatar_url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GitHubPullRequest {
+    pub title: String,
+    pub number: u32,
+    pub state: String,
+    #[serde(rename = "isDraft")]
+    pub is_draft: bool,
+    pub author: GitHubUser,
+    pub assignees: Vec<GitHubUser>,
+    #[serde(rename = "createdAt")]
+    pub created_at: String,
+    pub url: String,
+}
+
+#[tauri::command]
+async fn fetch_github_pr(
+    owner: String,
+    repo: String,
+    number: u32,
+) -> Result<GitHubPullRequest, String> {
+    // gh pr view コマンドを実行
+    let output = Command::new("gh")
+        .args([
+            "pr", "view",
+            &number.to_string(),
+            "--repo", &format!("{}/{}", owner, repo),
+            "--json", "title,number,state,isDraft,author,assignees,createdAt,url"
+        ])
+        .output()
+        .map_err(|e| format!("gh コマンド実行エラー: {}. gh CLIがインストールされているか確認してください。", e))?;
+
+    if !output.status.success() {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("gh コマンドエラー: {}", error_message));
+    }
+
+    let stdout = String::from_utf8(output.stdout)
+        .map_err(|e| format!("出力のパースエラー: {}", e))?;
+
+    let pr: GitHubPullRequest = serde_json::from_str(&stdout)
+        .map_err(|e| format!("JSONパースエラー: {}", e))?;
+
+    Ok(pr)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![fetch_slack_message])
+        .invoke_handler(tauri::generate_handler![fetch_slack_message, fetch_github_pr])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
