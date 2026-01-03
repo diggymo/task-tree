@@ -204,24 +204,45 @@ export const taskNodeStyles = `
     border-color: ${colors.success.default};
   }
 
-  .complete-btn.parent-task {
-    cursor: default;
-    opacity: 0.9;
+  .progress-ring {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    margin-left: ${spacing.md};
+    margin-top: ${spacing.xs};
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .complete-btn.parent-task:hover {
-    border-color: ${colors.border.light};
-    background: transparent;
+  .progress-ring svg {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
-  .progress-text {
-    font-size: ${fontSize.xs};
-    font-weight: 700;
+  .progress-ring-bg {
+    stroke: ${colors.border.light};
+  }
+
+  .progress-ring-progress {
+    stroke: ${colors.primary};
+    transition: stroke-dashoffset 0.3s ease;
+  }
+
+  .progress-ring.completed .progress-ring-progress {
+    stroke: ${colors.success.default};
+  }
+
+  .progress-ring-text {
+    font-size: ${fontSize.sm};
+    font-weight: 600;
     color: ${colors.text.secondary};
     line-height: 1;
+    z-index: 1;
   }
 
-  .task-node.completed .progress-text {
+  .progress-ring.completed .progress-ring-text {
     color: ${colors.success.default};
   }
 `;
