@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTaskContext } from '../../contexts/TaskContext';
 import type { TaskNode as TaskNodeType } from '../../types/task';
 import {
@@ -27,6 +27,9 @@ const TaskNode = React.memo(function TaskNode({
   isFirst = false,
   isLast = false,
 }: TaskNodeProps) {
+  // 画像ダイアログの状態
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+
   // Contextから全ての状態とハンドラを取得
   const {
     focusedId,
@@ -145,16 +148,41 @@ const TaskNode = React.memo(function TaskNode({
         {task.images && task.images.length > 0 && (
           <div className="task-images">
             {task.images.map((image) => (
-              <a
+              <button
                 key={image.id}
-                href={image.presignedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                type="button"
                 className="task-image-thumbnail"
+                onClick={() => setSelectedImageUrl(image.presignedUrl)}
               >
                 <img src={image.presignedUrl} alt="添付画像" loading="lazy" />
-              </a>
+              </button>
             ))}
+          </div>
+        )}
+        {selectedImageUrl && (
+          <div
+            className="image-dialog-overlay"
+            onClick={() => setSelectedImageUrl(null)}
+            onKeyDown={(e) => e.key === 'Escape' && setSelectedImageUrl(null)}
+          >
+            <div className="image-dialog" onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                className="image-dialog-close"
+                onClick={() => setSelectedImageUrl(null)}
+              >
+                ✕
+              </button>
+              <img src={selectedImageUrl} alt="添付画像" />
+              <a
+                href={selectedImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="image-dialog-link"
+              >
+                別タブで開く
+              </a>
+            </div>
           </div>
         )}
         <TaskChildren
