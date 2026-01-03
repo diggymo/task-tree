@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { SavedData, TaskRoot, ViewOffset, SaveStatus } from '../types/task';
 import { useTaskTree } from '../hooks/useTaskTree';
 import { useCanvasControls } from '../hooks/useCanvasControls';
@@ -22,6 +23,8 @@ export default function TaskTree({
   onExport,
   onImport
 }: TaskTreeProps) {
+  const [showShortcuts, setShowShortcuts] = useState(false);
+
   const handleRootChange = (root: TaskRoot) => {
     onDataChange?.(root, canvasControls.viewOffset, canvasControls.zoom);
   };
@@ -76,16 +79,27 @@ export default function TaskTree({
       onWheel={canvasControls.handleWheel}
     >
       <div className="header">
-        <h1>タスクツリー</h1>
-        <div className="shortcuts">
-          <span><kbd>Enter</kbd> 兄弟追加</span>
-          <span><kbd>Tab</kbd> / <kbd>先頭Space</kbd> 子追加</span>
-          <span><kbd>Shift+Tab</kbd> 親へフォーカス</span>
-          <span><kbd>Backspace</kbd> 削除（空の場合）</span>
-          <span><kbd>↑</kbd><kbd>↓</kbd> 兄弟間移動</span>
-          <span><kbd>⌘/Ctrl</kbd>+スクロール 拡大縮小</span>
-          <span><kbd>⌘/Ctrl</kbd>+ドラッグ 画面移動</span>
+        <div className="header-row">
+          <h1>タスクツリー</h1>
+          <button
+            className="help-toggle"
+            onClick={() => setShowShortcuts(!showShortcuts)}
+            title="操作説明を表示"
+          >
+            ?
+          </button>
         </div>
+        {showShortcuts && (
+          <div className="shortcuts">
+            <span><kbd>Enter</kbd> 兄弟追加</span>
+            <span><kbd>Tab</kbd> / <kbd>先頭Space</kbd> 子追加</span>
+            <span><kbd>Shift+Tab</kbd> 親へフォーカス</span>
+            <span><kbd>Backspace</kbd> 削除（空の場合）</span>
+            <span><kbd>↑</kbd><kbd>↓</kbd> 兄弟間移動</span>
+            <span><kbd>⌘/Ctrl</kbd>+スクロール 拡大縮小</span>
+            <span><kbd>⌘/Ctrl</kbd>+ドラッグ 画面移動</span>
+          </div>
+        )}
       </div>
       <div
         className="canvas"
@@ -159,18 +173,47 @@ export default function TaskTree({
           pointer-events: none;
         }
 
+        .header-row {
+          display: flex;
+          align-items: center;
+          gap: ${spacing.lg};
+        }
+
         .header h1 {
-          margin: 0 0 ${spacing.xl} 0;
+          margin: 0;
           font-size: ${fontSize.xl};
           font-weight: 700;
           color: ${colors.text.lightest};
           letter-spacing: 0.05em;
         }
 
+        .help-toggle {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          border: 1px solid ${colors.border.default};
+          background: rgba(51, 65, 85, 0.8);
+          color: ${colors.text.light};
+          font-size: ${fontSize.sm};
+          font-weight: 600;
+          cursor: pointer;
+          pointer-events: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s, border-color 0.2s;
+        }
+
+        .help-toggle:hover {
+          background: rgba(71, 85, 105, 0.9);
+          border-color: ${colors.text.secondary};
+        }
+
         .shortcuts {
           display: flex;
           gap: ${spacing['4xl']};
           flex-wrap: wrap;
+          margin-top: ${spacing.xl};
         }
 
         .shortcuts span {
