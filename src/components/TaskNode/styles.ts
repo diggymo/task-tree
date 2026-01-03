@@ -176,6 +176,33 @@ export const taskNodeStyles = `
     transform: scale(1.1);
   }
 
+  .add-child-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: ${borderRadius.md};
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid ${colors.primary};
+    color: ${colors.primary};
+    font-size: ${fontSize.lg};
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: ${transitions.default};
+    margin-left: ${spacing.md};
+    margin-top: ${spacing.xs};
+  }
+
+  .add-child-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+  }
+
+  .add-child-btn:active {
+    background: rgba(59, 130, 246, 0.3);
+    transform: scale(0.95);
+  }
+
   .complete-btn {
     width: 20px;
     height: 20px;
