@@ -137,7 +137,7 @@ export const taskNodeStyles = `
     background: transparent;
     border: none;
     outline: none;
-    font-size: ${fontSize.lg};
+    font-size: 16px; /* iOS auto-zoom prevention: must be 16px+ */
     color: ${colors.text.primary};
     font-family: ${fontFamily};
     min-width: 0;
