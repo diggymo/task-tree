@@ -7,7 +7,8 @@ import {
   addSibling,
   addChild,
   removeTask,
-  isDescendant
+  isDescendant,
+  hasChildren
 } from '../utils/taskOperations';
 
 interface UseTaskTreeOptions {
@@ -190,6 +191,12 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
   const handleToggleComplete = useCallback((taskId: string) => {
     const result = findTask(root, taskId);
     if (result) {
+      // 親タスクの場合は何もしない
+      if (hasChildren(result.node)) {
+        return;
+      }
+
+      // 葉タスクのみ完了状態をトグル
       setRoot(prev => {
         const newRoot = updateTask(prev, taskId, { completed: !result.node.completed }) as TaskRoot;
         onDataChange?.(newRoot);

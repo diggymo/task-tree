@@ -1,5 +1,7 @@
 import React from 'react';
 import type { TaskNodeProps } from '../types/task';
+import URLPreview from './URLPreview';
+import { isTaskCompleted, hasChildren, getCompletionStats } from '../utils/taskOperations';
 
 const TaskNode = React.memo(function TaskNode({
   task,
@@ -25,6 +27,11 @@ const TaskNode = React.memo(function TaskNode({
   const isDragging = draggedId === task.id;
   const isDragOver = dragOverId === task.id;
 
+  // 完了状態を計算
+  const isCompleted = isTaskCompleted(task);
+  const isParent = hasChildren(task);
+  const stats = isParent ? getCompletionStats(task) : null;
+
   return (
     <div className="task-branch">
       <div className="task-row">
@@ -43,7 +50,7 @@ const TaskNode = React.memo(function TaskNode({
           </div>
         )}
         <div
-          className={`task-node ${isFocused ? 'focused' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? `drag-over drag-${dragPosition}` : ''} ${task.completed ? 'completed' : ''}`}
+          className={`task-node ${isFocused ? 'focused' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? `drag-over drag-${dragPosition}` : ''} ${isCompleted ? 'completed' : ''}`}
           draggable
           onDragStart={(e) => onDragStart(e, task.id)}
           onDragOver={(e) => onDragOver(e, task.id)}
@@ -63,13 +70,21 @@ const TaskNode = React.memo(function TaskNode({
             rows={1}
           />
           <button
-            className="complete-btn"
+            className={`complete-btn ${isParent ? 'parent-task' : ''}`}
             onClick={(e) => {
               e.stopPropagation();
-              onToggleComplete(task.id);
+              // 親タスクの場合はクリック不可
+              if (!isParent) {
+                onToggleComplete(task.id);
+              }
             }}
+            disabled={isParent}
           >
-            {task.completed ? '✓' : ''}
+            {isParent ? (
+              <span className="progress-text">{stats!.completed}/{stats!.total}</span>
+            ) : (
+              isCompleted ? '✓' : ''
+            )}
           </button>
           {isFocused && (
             <button
@@ -83,6 +98,7 @@ const TaskNode = React.memo(function TaskNode({
             </button>
           )}
         </div>
+        <URLPreview text={task.text} />
         {task.children.length > 0 && (
           <div className="children-container">
             {task.children.map((child, index) => (
@@ -309,6 +325,27 @@ const TaskNode = React.memo(function TaskNode({
         .task-node.completed .complete-btn {
           background: #22c55e;
           border-color: #22c55e;
+        }
+
+        .complete-btn.parent-task {
+          cursor: default;
+          opacity: 0.9;
+        }
+
+        .complete-btn.parent-task:hover {
+          border-color: #64748b;
+          background: transparent;
+        }
+
+        .progress-text {
+          font-size: 9px;
+          font-weight: 700;
+          color: #94a3b8;
+          line-height: 1;
+        }
+
+        .task-node.completed .progress-text {
+          color: #22c55e;
         }
       `}</style>
     </div>

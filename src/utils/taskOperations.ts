@@ -92,3 +92,39 @@ export const insertAtIndex = (
     )
   };
 };
+
+/**
+ * タスクの完了状態を計算する（子タスクから再帰的に計算）
+ * - 子タスクがある場合: すべての子が完了していれば true
+ * - 子タスクがない場合: task.completed の値を返す
+ */
+export const isTaskCompleted = (task: TaskNode): boolean => {
+  if (task.children.length === 0) {
+    // 葉タスク: 保存されている completed 値を返す
+    return task.completed ?? false;
+  }
+
+  // 親タスク: すべての子が完了していれば true
+  return task.children.every(child => isTaskCompleted(child));
+};
+
+/**
+ * タスクが親タスクかどうかを判定
+ */
+export const hasChildren = (task: TaskNode): boolean => {
+  return task.children.length > 0;
+};
+
+/**
+ * 完了した子タスクの数と総数を取得
+ */
+export const getCompletionStats = (task: TaskNode): { completed: number; total: number } => {
+  if (task.children.length === 0) {
+    return { completed: 0, total: 0 };
+  }
+
+  const total = task.children.length;
+  const completed = task.children.filter(child => isTaskCompleted(child)).length;
+
+  return { completed, total };
+};
