@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { TaskNode as TaskNodeType } from '../../types/task';
 import { useTaskContext } from '../../contexts/TaskContext';
 import URLPreview from '../URLPreview';
@@ -54,6 +54,21 @@ const TaskNode = React.memo(function TaskNode({
   const isParent = hasChildren(task);
   const stats = isParent ? getCompletionStats(task) : null;
 
+  // 親タスクの場合、進捗率に応じた背景グラデーションを計算
+  const progressStyle = useMemo(() => {
+    if (!isParent || !stats) return undefined;
+
+    const progress = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
+
+    if (progress === 0) return undefined;
+
+    // 右側から緑色に塗る（to left方向のグラデーション）
+    const greenColor = isCompleted ? '#22c55e' : '#86efac'; // 完了時は濃い緑、途中は薄い緑
+    return {
+      background: `linear-gradient(to left, ${greenColor} ${progress}%, transparent ${progress}%)`
+    };
+  }, [isParent, stats, isCompleted]);
+
   const nodeClassName = [
     'task-node',
     isFocused && 'focused',
@@ -91,6 +106,7 @@ const TaskNode = React.memo(function TaskNode({
             onTextChange={onTextChange}
             onKeyDown={onKeyDown}
             onFocus={onFocus}
+            style={progressStyle}
           />
           {isFocused && (
             <button

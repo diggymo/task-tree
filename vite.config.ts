@@ -11,6 +11,11 @@ export default defineConfig(async () => ({
   // Set base path for GitHub Pages deployment
   base: process.env.GITHUB_PAGES === 'true' ? '/task-tree/' : '/',
 
+  // Make GITHUB_PAGES available at runtime
+  define: {
+    __GITHUB_PAGES__: JSON.stringify(process.env.GITHUB_PAGES === 'true')
+  },
+
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors

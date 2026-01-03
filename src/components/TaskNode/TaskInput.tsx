@@ -7,6 +7,7 @@ interface TaskInputProps {
   onTextChange: (taskId: string, text: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>, taskId: string) => void;
   onFocus: (taskId: string) => void;
+  style?: React.CSSProperties;
 }
 
 export const TaskInput = React.memo(function TaskInput({
@@ -15,7 +16,8 @@ export const TaskInput = React.memo(function TaskInput({
   inputRefs,
   onTextChange,
   onKeyDown,
-  onFocus
+  onFocus,
+  style
 }: TaskInputProps) {
   return (
     <textarea
@@ -27,6 +29,7 @@ export const TaskInput = React.memo(function TaskInput({
       placeholder="タスクを入力..."
       className="task-input"
       rows={1}
+      style={style}
     />
   );
 });
