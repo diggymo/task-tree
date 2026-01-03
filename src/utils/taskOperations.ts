@@ -74,25 +74,6 @@ export const isDescendant = (node: TaskNode, id: string): boolean => {
   return node.children.some(child => isDescendant(child, id));
 };
 
-export const insertAtIndex = (
-  node: TaskNode | TaskRoot,
-  targetParent: TaskNode | TaskRoot,
-  insertIndex: number,
-  taskToInsert: TaskNode
-): TaskNode | TaskRoot => {
-  if (node.id === targetParent.id) {
-    const newChildren = [...node.children];
-    newChildren.splice(insertIndex, 0, taskToInsert);
-    return { ...node, children: newChildren };
-  }
-  return {
-    ...node,
-    children: node.children.map(child =>
-      insertAtIndex(child, targetParent, insertIndex, taskToInsert) as TaskNode
-    )
-  };
-};
-
 /**
  * タスクの完了状態を計算する（子タスクから再帰的に計算）
  * - 子タスクがある場合: すべての子が完了していれば true
