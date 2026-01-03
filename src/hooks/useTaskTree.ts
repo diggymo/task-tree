@@ -26,7 +26,8 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
   const {
     handleTextChange,
     handleDelete,
-    handleToggleComplete
+    handleToggleComplete,
+    handleAddChild
   } = useTaskCRUD({
     root,
     setRoot,
@@ -73,6 +74,7 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleKeyDown,
     handleDelete,
     handleToggleComplete,
+    handleAddChild,
     handleDragStart,
     handleDragOver,
     handleDragLeave,

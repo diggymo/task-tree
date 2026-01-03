@@ -19,6 +19,7 @@ export interface TaskContextValue {
   onDrop: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
   onDelete: (taskId: string) => void;
   onToggleComplete: (taskId: string) => void;
+  onAddChild: (taskId: string) => void;
   // Touch event handlers for mobile drag and drop
   onTouchDragStart: (e: React.TouchEvent<HTMLDivElement>, taskId: string) => void;
   onTouchDragMove: (e: React.TouchEvent<HTMLDivElement>) => void;

@@ -39,6 +39,7 @@ const TaskNode = React.memo(function TaskNode({
     onDrop,
     onDelete,
     onToggleComplete,
+    onAddChild,
     onTouchDragStart,
     onTouchDragMove,
     onTouchDragEnd
@@ -91,6 +92,18 @@ const TaskNode = React.memo(function TaskNode({
             onKeyDown={onKeyDown}
             onFocus={onFocus}
           />
+          {isFocused && (
+            <button
+              className="add-child-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddChild(task.id);
+              }}
+              title="子タスクを追加"
+            >
+              →
+            </button>
+          )}
           <TaskActions
             taskId={task.id}
             isCompleted={isCompleted}

@@ -60,6 +60,7 @@ export default function TaskTree({
     onDrop: taskTree.handleDrop,
     onDelete: taskTree.handleDelete,
     onToggleComplete: taskTree.handleToggleComplete,
+    onAddChild: taskTree.handleAddChild,
     onTouchDragStart: taskTree.handleTouchDragStart,
     onTouchDragMove: taskTree.handleTouchDragMove,
     onTouchDragEnd: taskTree.handleTouchDragEnd
