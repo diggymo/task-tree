@@ -1,6 +1,12 @@
+use aws_config::BehaviorVersion;
+use aws_sdk_s3::presigning::PresigningConfig;
+use aws_sdk_s3::primitives::ByteStream;
+use aws_sdk_s3::Client as S3Client;
+use base64::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::process::Command;
+use std::time::Duration;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SlackMessage {
@@ -118,12 +124,115 @@ async fn fetch_github_pr(
     Ok(pr)
 }
 
+// S3画像アップロードのレスポンス
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UploadImageResponse {
+    pub s3_key: String,
+    pub presigned_url: String,
+}
+
+// S3クライアントを作成するヘルパー関数
+async fn create_s3_client() -> Result<S3Client, String> {
+    let config = aws_config::defaults(BehaviorVersion::latest())
+        .load()
+        .await;
+    Ok(S3Client::new(&config))
+}
+
+// バケット名を取得するヘルパー関数
+fn get_bucket_name() -> Result<String, String> {
+    env::var("S3_FILE_BUCKET_NAME")
+        .map_err(|_| "S3_FILE_BUCKET_NAME環境変数が設定されていません".to_string())
+}
+
+// 画像をS3にアップロード
+#[tauri::command]
+async fn upload_image_to_s3(
+    task_id: String,
+    image_data_base64: String,
+    file_extension: String,
+    sequence_number: u32,
+) -> Result<UploadImageResponse, String> {
+    let client = create_s3_client().await?;
+    let bucket = get_bucket_name()?;
+
+    // Base64デコード
+    let image_data = BASE64_STANDARD
+        .decode(&image_data_base64)
+        .map_err(|e| format!("Base64デコードエラー: {}", e))?;
+
+    // S3キーを生成: files/{task_id}/{sequence_number}.{ext}
+    let s3_key = format!("files/{}/{}.{}", task_id, sequence_number, file_extension);
+
+    // Content-Typeを決定
+    let content_type = match file_extension.to_lowercase().as_str() {
+        "png" => "image/png",
+        "jpg" | "jpeg" => "image/jpeg",
+        "gif" => "image/gif",
+        "webp" => "image/webp",
+        _ => "application/octet-stream",
+    };
+
+    // S3にアップロード
+    client
+        .put_object()
+        .bucket(&bucket)
+        .key(&s3_key)
+        .body(ByteStream::from(image_data))
+        .content_type(content_type)
+        .send()
+        .await
+        .map_err(|e| format!("S3アップロードエラー: {}", e))?;
+
+    // Presigned URLを生成 (1時間有効)
+    let presigned_url = generate_presigned_url_internal(&client, &bucket, &s3_key).await?;
+
+    Ok(UploadImageResponse {
+        s3_key,
+        presigned_url,
+    })
+}
+
+// Presigned URLを生成する内部関数
+async fn generate_presigned_url_internal(
+    client: &S3Client,
+    bucket: &str,
+    s3_key: &str,
+) -> Result<String, String> {
+    let presigning_config = PresigningConfig::expires_in(Duration::from_secs(3600))
+        .map_err(|e| format!("Presigning設定エラー: {}", e))?;
+
+    let presigned_request = client
+        .get_object()
+        .bucket(bucket)
+        .key(s3_key)
+        .presigned(presigning_config)
+        .await
+        .map_err(|e| format!("Presigned URL生成エラー: {}", e))?;
+
+    Ok(presigned_request.uri().to_string())
+}
+
+// Presigned URLを生成 (外部公開用コマンド)
+#[tauri::command]
+async fn get_presigned_url(s3_key: String) -> Result<String, String> {
+    let client = create_s3_client().await?;
+    let bucket = get_bucket_name()?;
+
+    generate_presigned_url_internal(&client, &bucket, &s3_key).await
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![fetch_slack_message, fetch_github_pr])
+        .invoke_handler(tauri::generate_handler![
+            fetch_slack_message,
+            fetch_github_pr,
+            upload_image_to_s3,
+            get_presigned_url
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -44,6 +44,7 @@ const TaskNode = React.memo(function TaskNode({
     onDelete,
     onToggleComplete,
     onAddChild,
+    onPaste,
     onTouchDragStart,
     onTouchDragMove,
     onTouchDragEnd,
@@ -114,6 +115,7 @@ const TaskNode = React.memo(function TaskNode({
             onTextChange={onTextChange}
             onKeyDown={onKeyDown}
             onFocus={onFocus}
+            onPaste={onPaste}
             style={progressStyle}
           />
           {isFocused && (
@@ -140,6 +142,21 @@ const TaskNode = React.memo(function TaskNode({
           />
         </div>
         <URLPreview text={task.text} />
+        {task.images && task.images.length > 0 && (
+          <div className="task-images">
+            {task.images.map((image) => (
+              <a
+                key={image.id}
+                href={image.presignedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="task-image-thumbnail"
+              >
+                <img src={image.presignedUrl} alt="添付画像" loading="lazy" />
+              </a>
+            ))}
+          </div>
+        )}
         <TaskChildren
           children={task.children}
           depth={depth}

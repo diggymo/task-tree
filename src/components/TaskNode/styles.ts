@@ -245,4 +245,34 @@ export const taskNodeStyles = `
   .progress-text.completed {
     color: ${colors.success.default};
   }
+
+  .task-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: ${spacing.md};
+    margin-top: ${spacing.md};
+    margin-left: ${spacing['3xl']};
+  }
+
+  .task-image-thumbnail {
+    display: block;
+    width: 80px;
+    height: 80px;
+    border-radius: ${borderRadius.lg};
+    overflow: hidden;
+    border: 1px solid ${colors.border.default};
+    transition: ${transitions.default};
+  }
+
+  .task-image-thumbnail:hover {
+    border-color: ${colors.primary};
+    box-shadow: ${shadows.taskNodeHover};
+    transform: scale(1.05);
+  }
+
+  .task-image-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
