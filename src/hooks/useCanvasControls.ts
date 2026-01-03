@@ -50,10 +50,12 @@ export function useCanvasControls({
     if (e.touches.length === 1) {
       const touch = e.touches[0];
       const target = e.target as HTMLElement;
-      const isBackground = target === containerRef.current ||
-        target.classList.contains('canvas');
 
-      if (isBackground) {
+      // ドラッグハンドルからのタッチはタスクドラッグ用なので除外
+      const isDragHandle = target.classList.contains('drag-handle') ||
+        target.closest('.drag-handle');
+
+      if (!isDragHandle) {
         setIsPanning(true);
         setPanStart({ x: touch.clientX - viewOffset.x, y: touch.clientY - viewOffset.y });
       }
