@@ -56,7 +56,10 @@ export default function TaskTree({
     onDragLeave: taskTree.handleDragLeave,
     onDrop: taskTree.handleDrop,
     onDelete: taskTree.handleDelete,
-    onToggleComplete: taskTree.handleToggleComplete
+    onToggleComplete: taskTree.handleToggleComplete,
+    onTouchDragStart: taskTree.handleTouchDragStart,
+    onTouchDragMove: taskTree.handleTouchDragMove,
+    onTouchDragEnd: taskTree.handleTouchDragEnd
   };
 
   return (
@@ -67,6 +70,9 @@ export default function TaskTree({
       onMouseMove={canvasControls.handleMouseMove}
       onMouseUp={canvasControls.handleMouseUp}
       onMouseLeave={canvasControls.handleMouseUp}
+      onTouchStart={canvasControls.handleTouchStart}
+      onTouchMove={canvasControls.handleTouchMove}
+      onTouchEnd={canvasControls.handleTouchEnd}
       onWheel={canvasControls.handleWheel}
     >
       <div className="header">

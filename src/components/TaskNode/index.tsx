@@ -38,7 +38,10 @@ const TaskNode = React.memo(function TaskNode({
     onDragLeave,
     onDrop,
     onDelete,
-    onToggleComplete
+    onToggleComplete,
+    onTouchDragStart,
+    onTouchDragMove,
+    onTouchDragEnd
   } = useTaskContext();
 
   const isFocused = focusedId === task.id;
@@ -66,11 +69,15 @@ const TaskNode = React.memo(function TaskNode({
         )}
         <div
           className={nodeClassName}
+          data-task-id={task.id}
           draggable
           onDragStart={(e) => onDragStart(e, task.id)}
           onDragOver={(e) => onDragOver(e, task.id)}
           onDrop={(e) => onDrop(e, task.id)}
           onDragLeave={onDragLeave}
+          onTouchStart={(e) => onTouchDragStart(e, task.id)}
+          onTouchMove={onTouchDragMove}
+          onTouchEnd={onTouchDragEnd}
           onClick={() => onFocus(task.id)}
         >
           <div className="drag-handle">⋮⋮</div>
