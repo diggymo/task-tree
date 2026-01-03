@@ -146,6 +146,8 @@ export const taskNodeStyles = `
     line-height: 1.5;
     padding: ${spacing.xs} 0;
     field-sizing: content;
+    transition: background 0.3s ease;
+    border-radius: ${borderRadius.md};
   }
 
   .task-input::placeholder {
@@ -231,45 +233,16 @@ export const taskNodeStyles = `
     border-color: ${colors.success.default};
   }
 
-  .progress-ring {
-    position: relative;
-    width: 28px;
-    height: 28px;
-    margin-left: ${spacing.md};
-    margin-top: ${spacing.xs};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .progress-ring svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .progress-ring-bg {
-    stroke: ${colors.border.light};
-  }
-
-  .progress-ring-progress {
-    stroke: ${colors.primary};
-    transition: stroke-dashoffset 0.3s ease;
-  }
-
-  .progress-ring.completed .progress-ring-progress {
-    stroke: ${colors.success.default};
-  }
-
-  .progress-ring-text {
+  .progress-text {
     font-size: ${fontSize.sm};
     font-weight: 600;
     color: ${colors.text.secondary};
-    line-height: 1;
-    z-index: 1;
+    margin-left: ${spacing.md};
+    margin-top: ${spacing.xs};
+    white-space: nowrap;
   }
 
-  .progress-ring.completed .progress-ring-text {
+  .progress-text.completed {
     color: ${colors.success.default};
   }
 `;
