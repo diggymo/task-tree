@@ -45,6 +45,37 @@ export function useCanvasControls({
     setIsPanning(false);
   }, []);
 
+  // Touch event handlers for mobile support
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const target = e.target as HTMLElement;
+      const isBackground = target === containerRef.current ||
+        target.classList.contains('canvas');
+
+      if (isBackground) {
+        setIsPanning(true);
+        setPanStart({ x: touch.clientX - viewOffset.x, y: touch.clientY - viewOffset.y });
+      }
+    }
+  }, [viewOffset]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isPanning && e.touches.length === 1) {
+      const touch = e.touches[0];
+      const newOffset = {
+        x: touch.clientX - panStart.x,
+        y: touch.clientY - panStart.y
+      };
+      setViewOffset(newOffset);
+      onViewChange?.(newOffset, zoom);
+    }
+  }, [isPanning, panStart, zoom, onViewChange]);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     if (e.metaKey || e.ctrlKey) {
       e.preventDefault();
@@ -99,6 +130,9 @@ export function useCanvasControls({
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     handleWheel,
     handleZoomIn,
     handleZoomOut,

@@ -51,7 +51,10 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleDragStart,
     handleDragOver,
     handleDragLeave,
-    handleDrop
+    handleDrop,
+    handleTouchDragStart,
+    handleTouchDragMove,
+    handleTouchDragEnd
   } = useTaskDragDrop({
     root,
     setRoot,
@@ -73,6 +76,9 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleDragStart,
     handleDragOver,
     handleDragLeave,
-    handleDrop
+    handleDrop,
+    handleTouchDragStart,
+    handleTouchDragMove,
+    handleTouchDragEnd
   };
 }
