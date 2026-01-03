@@ -75,12 +75,14 @@ const TaskNode = React.memo(function TaskNode({
           onDragOver={(e) => onDragOver(e, task.id)}
           onDrop={(e) => onDrop(e, task.id)}
           onDragLeave={onDragLeave}
-          onTouchStart={(e) => onTouchDragStart(e, task.id)}
           onTouchMove={onTouchDragMove}
           onTouchEnd={onTouchDragEnd}
           onClick={() => onFocus(task.id)}
         >
-          <div className="drag-handle">⋮⋮</div>
+          <div
+            className="drag-handle"
+            onTouchStart={(e) => onTouchDragStart(e, task.id)}
+          >⋮⋮</div>
           <TaskInput
             taskId={task.id}
             text={task.text}

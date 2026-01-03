@@ -128,6 +128,7 @@ export function useTaskDragDrop({
 
   // Touch event handlers for mobile drag and drop
   const handleTouchDragStart = useCallback((e: React.TouchEvent<HTMLDivElement>, taskId: string) => {
+    e.preventDefault();
     e.stopPropagation();
     touchDragIdRef.current = taskId;
     setDraggedId(taskId);
