@@ -126,7 +126,7 @@ export default function TaskTree({
       <style>{`
         .task-tree-container {
           width: 100%;
-          height: 100vh;
+          height: 100dvh;
           background: ${gradients.containerBackground};
           overflow: hidden;
           position: relative;
