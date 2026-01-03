@@ -1,5 +1,5 @@
-import type { SavedData } from '../types/task';
 import { loadFromAppData } from '../hooks/useFileStorage';
+import type { SavedData } from '../types/task';
 
 interface LoadingScreenProps {
   onDataLoaded: (data: SavedData | null) => void;
@@ -16,7 +16,7 @@ export default function LoadingScreen({ onDataLoaded }: LoadingScreenProps) {
       <div className="loading-content">
         <h1>TaskTree</h1>
         <p>タスクをツリー構造で管理</p>
-        <button onClick={handleLoadData} className="load-button">
+        <button type="button" onClick={handleLoadData} className="load-button">
           開始する
         </button>
       </div>

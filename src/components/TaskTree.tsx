@@ -1,12 +1,25 @@
 import { useState } from 'react';
-import type { SavedData, TaskRoot, ViewOffset, SaveStatus } from '../types/task';
-import { useTaskTree } from '../hooks/useTaskTree';
-import { useCanvasControls } from '../hooks/useCanvasControls';
+import {
+  borderRadius,
+  colors,
+  fontFamily,
+  fontSize,
+  gradients,
+  grid,
+  spacing,
+} from '../constants/theme';
 import { TaskProvider } from '../contexts/TaskContext';
+import { useCanvasControls } from '../hooks/useCanvasControls';
+import { useTaskTree } from '../hooks/useTaskTree';
+import type {
+  SavedData,
+  SaveStatus,
+  TaskRoot,
+  ViewOffset,
+} from '../types/task';
+import SaveIndicator from './SaveIndicator';
 import TaskNode from './TaskNode';
 import ZoomIndicator from './ZoomIndicator';
-import SaveIndicator from './SaveIndicator';
-import { colors, spacing, borderRadius, fontSize, gradients, grid, fontFamily } from '../constants/theme';
 
 interface TaskTreeProps {
   initialData: SavedData;
@@ -21,7 +34,7 @@ export default function TaskTree({
   onDataChange,
   saveStatus = 'saved',
   onExport,
-  onImport
+  onImport,
 }: TaskTreeProps) {
   const [showShortcuts, setShowShortcuts] = useState(false);
 
@@ -35,13 +48,13 @@ export default function TaskTree({
 
   const taskTree = useTaskTree({
     initialRoot: initialData.root,
-    onDataChange: handleRootChange
+    onDataChange: handleRootChange,
   });
 
   const canvasControls = useCanvasControls({
     initialViewOffset: initialData.viewOffset,
     initialZoom: initialData.zoom,
-    onViewChange: handleViewChange
+    onViewChange: handleViewChange,
   });
 
   // TaskContext用の値をまとめる
@@ -63,7 +76,7 @@ export default function TaskTree({
     onAddChild: taskTree.handleAddChild,
     onTouchDragStart: taskTree.handleTouchDragStart,
     onTouchDragMove: taskTree.handleTouchDragMove,
-    onTouchDragEnd: taskTree.handleTouchDragEnd
+    onTouchDragEnd: taskTree.handleTouchDragEnd,
   };
 
   return (
@@ -83,6 +96,7 @@ export default function TaskTree({
         <div className="header-row">
           <h1>タスクツリー</h1>
           <button
+            type="button"
             className="help-toggle"
             onClick={() => setShowShortcuts(!showShortcuts)}
             title="操作説明を表示"
@@ -92,20 +106,35 @@ export default function TaskTree({
         </div>
         {showShortcuts && (
           <div className="shortcuts">
-            <span><kbd>Enter</kbd> 兄弟追加</span>
-            <span><kbd>Tab</kbd> / <kbd>先頭Space</kbd> 子追加</span>
-            <span><kbd>Shift+Tab</kbd> 親へフォーカス</span>
-            <span><kbd>Backspace</kbd> 削除（空の場合）</span>
-            <span><kbd>↑</kbd><kbd>↓</kbd> 兄弟間移動</span>
-            <span><kbd>⌘/Ctrl</kbd>+スクロール 拡大縮小</span>
-            <span><kbd>⌘/Ctrl</kbd>+ドラッグ 画面移動</span>
+            <span>
+              <kbd>Enter</kbd> 兄弟追加
+            </span>
+            <span>
+              <kbd>Tab</kbd> / <kbd>先頭Space</kbd> 子追加
+            </span>
+            <span>
+              <kbd>Shift+Tab</kbd> 親へフォーカス
+            </span>
+            <span>
+              <kbd>Backspace</kbd> 削除（空の場合）
+            </span>
+            <span>
+              <kbd>↑</kbd>
+              <kbd>↓</kbd> 兄弟間移動
+            </span>
+            <span>
+              <kbd>⌘/Ctrl</kbd>+スクロール 拡大縮小
+            </span>
+            <span>
+              <kbd>⌘/Ctrl</kbd>+ドラッグ 画面移動
+            </span>
           </div>
         )}
       </div>
       <div
         className="canvas"
         style={{
-          transform: `translate(${canvasControls.viewOffset.x}px, ${canvasControls.viewOffset.y}px) scale(${canvasControls.zoom})`
+          transform: `translate(${canvasControls.viewOffset.x}px, ${canvasControls.viewOffset.y}px) scale(${canvasControls.zoom})`,
         }}
       >
         <TaskProvider value={taskContextValue}>

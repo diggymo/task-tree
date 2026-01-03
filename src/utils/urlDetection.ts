@@ -10,14 +10,14 @@ export function extractURLs(text: string): string[] {
 // 形式: https://{workspace}.slack.com/archives/{channel_id}/p{timestamp}
 // 例: https://example.slack.com/archives/C1234567890/p1234567890123456
 function isSlackURL(url: string): boolean {
-  return /https:\/\/[^\/]+\.slack\.com\/archives\/[^\/]+\/p\d+/.test(url);
+  return /https:\/\/[^/]+\.slack\.com\/archives\/[^/]+\/p\d+/.test(url);
 }
 
 // GitHubのPull Request URLを検出する
 // 形式: https://github.com/{owner}/{repo}/pull/{number}
 // 例: https://github.com/facebook/react/pull/12345
 function isGitHubURL(url: string): boolean {
-  return /https:\/\/github\.com\/[^\/]+\/[^\/]+\/pull\/\d+/.test(url);
+  return /https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/\d+/.test(url);
 }
 
 // JiraのURL (将来実装)
@@ -36,9 +36,9 @@ export function detectURLType(url: string): URLServiceType {
 // テキストからURLとそのタイプの配列を取得する
 export function detectURLsInText(text: string): URLInfo[] {
   const urls = extractURLs(text);
-  return urls.map(url => ({
+  return urls.map((url) => ({
     url,
-    type: detectURLType(url)
+    type: detectURLType(url),
   }));
 }
 
@@ -50,7 +50,9 @@ export interface SlackURLParts {
 }
 
 export function parseSlackURL(url: string): SlackURLParts | null {
-  const match = url.match(/https:\/\/([^\/]+)\.slack\.com\/archives\/([^\/]+)\/p(\d+)/);
+  const match = url.match(
+    /https:\/\/([^/]+)\.slack\.com\/archives\/([^/]+)\/p(\d+)/,
+  );
   if (!match) return null;
 
   const [, workspace, channelId, timestampRaw] = match;
@@ -61,7 +63,7 @@ export function parseSlackURL(url: string): SlackURLParts | null {
   return {
     workspace,
     channelId,
-    timestamp
+    timestamp,
   };
 }
 
@@ -73,7 +75,9 @@ export interface GitHubPRURLParts {
 }
 
 export function parseGitHubPRURL(url: string): GitHubPRURLParts | null {
-  const match = url.match(/https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)/);
+  const match = url.match(
+    /https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)/,
+  );
   if (!match) return null;
 
   const [, owner, repo, numberStr] = match;
@@ -81,6 +85,6 @@ export function parseGitHubPRURL(url: string): GitHubPRURLParts | null {
   return {
     owner,
     repo,
-    number: parseInt(numberStr, 10)
+    number: parseInt(numberStr, 10),
   };
 }

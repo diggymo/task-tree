@@ -1,9 +1,13 @@
-import React, { useMemo } from 'react';
-import { detectURLsInText } from '../utils/urlDetection';
+import type React from 'react';
+import { useMemo } from 'react';
 import { useURLPreview } from '../hooks/useURLPreview';
-import SlackMessagePreview from './previews/SlackMessagePreview';
+import type {
+  GitHubPullRequestPreview,
+  SlackMessagePreview as SlackMessagePreviewData,
+} from '../types/urlPreview';
+import { detectURLsInText } from '../utils/urlDetection';
 import GitHubPRPreview from './previews/GitHubPRPreview';
-import type { SlackMessagePreview as SlackMessagePreviewData, GitHubPullRequestPreview } from '../types/urlPreview';
+import SlackMessagePreview from './previews/SlackMessagePreview';
 
 interface URLPreviewProps {
   text: string;
@@ -14,13 +18,15 @@ const URLPreview: React.FC<URLPreviewProps> = ({ text }) => {
   const urlInfo = useMemo(() => {
     const urls = detectURLsInText(text);
     // SlackとGitHubに対応
-    const supportedUrl = urls.find(u => u.type === 'slack' || u.type === 'github');
+    const supportedUrl = urls.find(
+      (u) => u.type === 'slack' || u.type === 'github',
+    );
     return supportedUrl || null;
   }, [text]);
 
   const { loading, data, error } = useURLPreview(
     urlInfo?.url || null,
-    urlInfo?.type || 'unknown'
+    urlInfo?.type || 'unknown',
   );
 
   if (!urlInfo || urlInfo.type === 'unknown') {

@@ -23,9 +23,10 @@ pnpm fix          # Auto-fix biome errors
 
 ```bash
 pnpm validate     # biomeによるlint・フォーマットチェック
+pnpm build        # TypeScriptの型チェック + ビルド
 ```
 
-エラーがある場合は `pnpm fix` で自動修正できます。
+validateエラーがある場合は `pnpm fix` で自動修正できます。
 
 ## Architecture
 

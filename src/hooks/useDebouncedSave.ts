@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { SavedData, SaveStatus } from '../types/task';
 import { saveToAppData } from './useFileStorage';
 
@@ -20,7 +20,7 @@ export function useDebouncedSave() {
       try {
         const dataToSave: SavedData = {
           ...data,
-          savedAt: new Date().toISOString()
+          savedAt: new Date().toISOString(),
         };
         const success = await saveToAppData(dataToSave);
         setSaveStatus(success ? 'saved' : 'error');
@@ -42,6 +42,6 @@ export function useDebouncedSave() {
     saveStatus,
     scheduleSave,
     cancelSave,
-    setSaveStatus
+    setSaveStatus,
   };
 }

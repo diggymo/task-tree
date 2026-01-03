@@ -16,7 +16,7 @@ interface TaskChildrenProps {
 export const TaskChildren = React.memo(function TaskChildren({
   children,
   depth,
-  TaskNodeComponent
+  TaskNodeComponent,
 }: TaskChildrenProps) {
   if (children.length === 0) return null;
 

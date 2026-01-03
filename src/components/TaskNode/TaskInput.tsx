@@ -5,7 +5,10 @@ interface TaskInputProps {
   text: string;
   inputRefs: React.MutableRefObject<Record<string, HTMLTextAreaElement | null>>;
   onTextChange: (taskId: string, text: string) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>, taskId: string) => void;
+  onKeyDown: (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+    taskId: string,
+  ) => void;
   onFocus: (taskId: string) => void;
   style?: React.CSSProperties;
 }
@@ -17,11 +20,13 @@ export const TaskInput = React.memo(function TaskInput({
   onTextChange,
   onKeyDown,
   onFocus,
-  style
+  style,
 }: TaskInputProps) {
   return (
     <textarea
-      ref={el => { if (inputRefs) inputRefs.current[taskId] = el; }}
+      ref={(el) => {
+        if (inputRefs) inputRefs.current[taskId] = el;
+      }}
       value={text}
       onChange={(e) => onTextChange(taskId, e.target.value)}
       onKeyDown={(e) => onKeyDown(e, taskId)}

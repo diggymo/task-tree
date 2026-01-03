@@ -17,16 +17,17 @@ export const TaskActions = React.memo(function TaskActions({
   isFocused,
   stats,
   onToggleComplete,
-  onDelete
+  onDelete,
 }: TaskActionsProps) {
   return (
     <>
       {isParent ? (
         <span className={`progress-text ${isCompleted ? 'completed' : ''}`}>
-          {stats!.completed}/{stats!.total}
+          {stats?.completed}/{stats?.total}
         </span>
       ) : (
         <button
+          type="button"
           className="complete-btn"
           onClick={(e) => {
             e.stopPropagation();
@@ -38,6 +39,7 @@ export const TaskActions = React.memo(function TaskActions({
       )}
       {isFocused && (
         <button
+          type="button"
           className="delete-btn"
           onClick={(e) => {
             e.stopPropagation();

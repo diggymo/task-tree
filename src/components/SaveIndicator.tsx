@@ -9,16 +9,33 @@ interface SaveIndicatorProps {
 export default function SaveIndicator({
   saveStatus,
   onExport,
-  onImport
+  onImport,
 }: SaveIndicatorProps) {
   return (
     <div className={`save-indicator ${saveStatus}`}>
-      {saveStatus === 'saved' && <><span className="icon">✓</span> 保存済み</>}
-      {saveStatus === 'pending' && <><span className="icon">●</span> 未保存</>}
-      {saveStatus === 'saving' && <><span className="icon spinning">⟳</span> 保存中...</>}
-      {saveStatus === 'error' && <><span className="icon">!</span> エラー</>}
+      {saveStatus === 'saved' && (
+        <>
+          <span className="icon">✓</span> 保存済み
+        </>
+      )}
+      {saveStatus === 'pending' && (
+        <>
+          <span className="icon">●</span> 未保存
+        </>
+      )}
+      {saveStatus === 'saving' && (
+        <>
+          <span className="icon spinning">⟳</span> 保存中...
+        </>
+      )}
+      {saveStatus === 'error' && (
+        <>
+          <span className="icon">!</span> エラー
+        </>
+      )}
       <div className="save-actions">
         <button
+          type="button"
           className="export-btn"
           onClick={onExport}
           title="JSONとしてエクスポート"
@@ -26,6 +43,7 @@ export default function SaveIndicator({
           ↓
         </button>
         <button
+          type="button"
           className="import-btn"
           onClick={onImport}
           title="JSONをインポート"

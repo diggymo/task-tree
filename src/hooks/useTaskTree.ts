@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { TaskRoot } from '../types/task';
-import { useTaskFocus } from './useTaskFocus';
 import { useTaskCRUD } from './useTaskCRUD';
-import { useTaskKeyboard } from './useTaskKeyboard';
 import { useTaskDragDrop } from './useTaskDragDrop';
+import { useTaskFocus } from './useTaskFocus';
+import { useTaskKeyboard } from './useTaskKeyboard';
 
 interface UseTaskTreeOptions {
   initialRoot: TaskRoot;
@@ -14,25 +14,20 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
   const [root, setRoot] = useState<TaskRoot>(initialRoot);
 
   // フォーカス管理
-  const {
-    focusedId,
-    inputRefs,
-    setFocusedId,
-    handleFocus,
-    focusTask
-  } = useTaskFocus();
+  const { focusedId, inputRefs, setFocusedId, handleFocus, focusTask } =
+    useTaskFocus();
 
   // CRUD操作
   const {
     handleTextChange,
     handleDelete,
     handleToggleComplete,
-    handleAddChild
+    handleAddChild,
   } = useTaskCRUD({
     root,
     setRoot,
     onDataChange,
-    focusTask
+    focusTask,
   });
 
   // キーボード操作
@@ -41,7 +36,7 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     setRoot,
     onDataChange,
     focusTask,
-    setFocusedId
+    setFocusedId,
   });
 
   // ドラッグ&ドロップ
@@ -55,11 +50,11 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleDrop,
     handleTouchDragStart,
     handleTouchDragMove,
-    handleTouchDragEnd
+    handleTouchDragEnd,
   } = useTaskDragDrop({
     root,
     setRoot,
-    onDataChange
+    onDataChange,
   });
 
   return {
@@ -81,6 +76,6 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleDrop,
     handleTouchDragStart,
     handleTouchDragMove,
-    handleTouchDragEnd
+    handleTouchDragEnd,
   };
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 export interface UseTaskFocusReturn {
   focusedId: string | null;
@@ -34,6 +34,6 @@ export function useTaskFocus(): UseTaskFocusReturn {
     inputRefs,
     setFocusedId,
     handleFocus,
-    focusTask
+    focusTask,
   };
 }

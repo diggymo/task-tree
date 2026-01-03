@@ -1,12 +1,12 @@
 import {
-  colors,
-  spacing,
   borderRadius,
+  colors,
+  fontFamily,
   fontSize,
-  shadows,
   gradients,
+  shadows,
+  spacing,
   transitions,
-  fontFamily
 } from '../../constants/theme';
 
 export const taskNodeStyles = `

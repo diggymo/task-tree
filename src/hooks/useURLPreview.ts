@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { useCallback, useEffect, useState } from 'react';
 import type { URLPreviewData, URLPreviewState } from '../types/urlPreview';
 import { parseSlackURL } from '../utils/urlDetection';
 import { useGitHubPR } from './useGitHubPR';
@@ -14,59 +14,72 @@ export function useURLPreview(url: string | null, type: string) {
   const [state, setState] = useState<URLPreviewState>({
     loading: false,
     data: null,
-    error: null
+    error: null,
   });
 
   const { fetchGitHubPR } = useGitHubPR();
 
-  const fetchSlackMessage = useCallback(async (url: string): Promise<URLPreviewData | null> => {
-    const parts = parseSlackURL(url);
-    if (!parts) {
-      throw new Error('Invalid Slack URL');
-    }
-
-    const response = await invoke<SlackMessageResponse>('fetch_slack_message', {
-      channelId: parts.channelId,
-      timestamp: parts.timestamp
-    });
-
-    return {
-      type: 'slack',
-      user: response.user,
-      text: response.text,
-      timestamp: response.ts,
-      teamDomain: parts.workspace
-    };
-  }, []);
-
-  const fetchPreview = useCallback(async (url: string, type: string) => {
-    setState({ loading: true, data: null, error: null });
-
-    try {
-      let data: URLPreviewData | null = null;
-
-      if (type === 'slack') {
-        data = await fetchSlackMessage(url);
-      } else if (type === 'github') {
-        data = await fetchGitHubPR(url);
+  const fetchSlackMessage = useCallback(
+    async (url: string): Promise<URLPreviewData | null> => {
+      const parts = parseSlackURL(url);
+      if (!parts) {
+        throw new Error('Invalid Slack URL');
       }
-      // 将来的に他のサービスをここに追加
-      // else if (type === 'jira') { ... }
 
-      if (data) {
-        setState({ loading: false, data, error: null });
-      } else {
-        setState({ loading: false, data: null, error: 'Unsupported URL type' });
+      const response = await invoke<SlackMessageResponse>(
+        'fetch_slack_message',
+        {
+          channelId: parts.channelId,
+          timestamp: parts.timestamp,
+        },
+      );
+
+      return {
+        type: 'slack',
+        user: response.user,
+        text: response.text,
+        timestamp: response.ts,
+        teamDomain: parts.workspace,
+      };
+    },
+    [],
+  );
+
+  const fetchPreview = useCallback(
+    async (url: string, type: string) => {
+      setState({ loading: true, data: null, error: null });
+
+      try {
+        let data: URLPreviewData | null = null;
+
+        if (type === 'slack') {
+          data = await fetchSlackMessage(url);
+        } else if (type === 'github') {
+          data = await fetchGitHubPR(url);
+        }
+        // 将来的に他のサービスをここに追加
+        // else if (type === 'jira') { ... }
+
+        if (data) {
+          setState({ loading: false, data, error: null });
+        } else {
+          setState({
+            loading: false,
+            data: null,
+            error: 'Unsupported URL type',
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch URL preview:', error);
+        setState({
+          loading: false,
+          data: null,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
       }
-    } catch (error) {
-      console.error('Failed to fetch URL preview:', error);
-      setState({
-        loading: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-  }, [fetchSlackMessage, fetchGitHubPR]);
+    },
+    [fetchSlackMessage, fetchGitHubPR],
+  );
 
   useEffect(() => {
     if (url && type !== 'unknown') {
