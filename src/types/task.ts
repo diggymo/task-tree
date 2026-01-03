@@ -32,27 +32,6 @@ export interface TaskSearchResult {
   index: number;
 }
 
-export interface TaskNodeProps {
-  task: TaskNode;
-  depth?: number;
-  isFirst?: boolean;
-  isLast?: boolean;
-  focusedId: string | null;
-  draggedId: string | null;
-  dragOverId: string | null;
-  dragPosition: DragPosition;
-  onFocus: (taskId: string) => void;
-  onTextChange: (taskId: string, text: string) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>, taskId: string) => void;
-  onDragStart: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
-  onDragOver: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
-  onDragLeave: () => void;
-  onDrop: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
-  onDelete: (taskId: string) => void;
-  onToggleComplete: (taskId: string) => void;
-  inputRefs: React.MutableRefObject<Record<string, HTMLTextAreaElement | null>>;
-}
-
 export const initialTasks: TaskRoot = {
   id: 'root',
   text: 'ルート',

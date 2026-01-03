@@ -7,40 +7,35 @@ import TaskTree from './components/TaskTree';
 import { useDebouncedSave } from './hooks/useDebouncedSave';
 import { exportToFile, importFromFile } from './hooks/useFileStorage';
 
-type AppPhase = 'loading' | 'choose' | 'ready';
+// 単一のstateオブジェクトとして状態を定義
+type AppState =
+  | { phase: 'loading' }
+  | { phase: 'choose'; savedData: SavedData }
+  | { phase: 'ready'; currentData: SavedData; initialData: SavedData };
 
 function App() {
-  const [phase, setPhase] = useState<AppPhase>('loading');
-  const [savedData, setSavedData] = useState<SavedData | null>(null);
-  const [initialData, setInitialData] = useState<SavedData | null>(null);
-  const [currentData, setCurrentData] = useState<SavedData | null>(null);
+  const [appState, setAppState] = useState<AppState>({ phase: 'loading' });
   const { saveStatus, scheduleSave } = useDebouncedSave();
 
   const handleDataLoaded = (data: SavedData | null) => {
     if (data) {
-      setSavedData(data);
-      setPhase('choose');
+      setAppState({ phase: 'choose', savedData: data });
     } else {
       const initial = createInitialData();
-      setInitialData(initial);
-      setCurrentData(initial);
-      setPhase('ready');
+      setAppState({ phase: 'ready', currentData: initial, initialData: initial });
     }
   };
 
   const handleRestore = () => {
-    if (savedData) {
-      setInitialData(savedData);
-      setCurrentData(savedData);
-      setPhase('ready');
+    if (appState.phase === 'choose') {
+      const { savedData } = appState;
+      setAppState({ phase: 'ready', currentData: savedData, initialData: savedData });
     }
   };
 
   const handleStartFresh = () => {
     const initial = createInitialData();
-    setInitialData(initial);
-    setCurrentData(initial);
-    setPhase('ready');
+    setAppState({ phase: 'ready', currentData: initial, initialData: initial });
   };
 
   const handleDataChange = useCallback((root: TaskRoot, viewOffset: ViewOffset, zoom: number) => {
@@ -50,58 +45,59 @@ function App() {
       zoom,
       savedAt: new Date().toISOString()
     };
-    setCurrentData(newData);
+    setAppState(prev => {
+      if (prev.phase !== 'ready') return prev;
+      return { ...prev, currentData: newData };
+    });
     scheduleSave(newData);
   }, [scheduleSave]);
 
   const handleExport = useCallback(async () => {
-    if (currentData) {
-      await exportToFile(currentData);
+    if (appState.phase === 'ready') {
+      await exportToFile(appState.currentData);
     }
-  }, [currentData]);
+  }, [appState]);
 
   const handleImport = useCallback(async () => {
     const imported = await importFromFile();
     if (imported) {
       const confirmed = window.confirm('インポートすると現在のデータは上書きされます。続行しますか？');
       if (confirmed) {
-        setInitialData(imported);
-        setCurrentData(imported);
         scheduleSave(imported);
-        // Force re-render by updating phase temporarily
-        setPhase('loading');
-        setTimeout(() => setPhase('ready'), 500);
+        // Force re-render by temporarily transitioning through loading
+        setAppState({ phase: 'loading' });
+        setTimeout(() => {
+          setAppState({ phase: 'ready', currentData: imported, initialData: imported });
+        }, 500);
       }
     }
   }, [scheduleSave]);
 
-  if (phase === 'loading') {
-    return <LoadingScreen onDataLoaded={handleDataLoaded} />;
-  }
+  // フェーズに応じたレンダリング
+  switch (appState.phase) {
+    case 'loading':
+      return <LoadingScreen onDataLoaded={handleDataLoaded} />;
 
-  if (phase === 'choose' && savedData) {
-    return (
-      <RestoreDialog
-        savedData={savedData}
-        onRestore={handleRestore}
-        onStartFresh={handleStartFresh}
-      />
-    );
-  }
+    case 'choose':
+      return (
+        <RestoreDialog
+          savedData={appState.savedData}
+          onRestore={handleRestore}
+          onStartFresh={handleStartFresh}
+        />
+      );
 
-  if (phase === 'ready' && initialData) {
-    return (
-      <TaskTree
-        initialData={initialData}
-        onDataChange={handleDataChange}
-        saveStatus={saveStatus}
-        onExport={handleExport}
-        onImport={handleImport}
-      />
-    );
+    case 'ready':
+      return (
+        <TaskTree
+          initialData={appState.initialData}
+          onDataChange={handleDataChange}
+          saveStatus={saveStatus}
+          onExport={handleExport}
+          onImport={handleImport}
+        />
+      );
   }
-
-  return null;
 }
 
 export default App;
