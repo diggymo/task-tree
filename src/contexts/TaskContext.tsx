@@ -1,6 +1,6 @@
 import type React from 'react';
 import { createContext, useContext } from 'react';
-import type { DragPosition } from '../types/task';
+import type { DragPosition, TaskImage } from '../types/task';
 
 export interface TaskContextValue {
   // 状態
@@ -24,6 +24,8 @@ export interface TaskContextValue {
   onDelete: (taskId: string) => void;
   onToggleComplete: (taskId: string) => void;
   onAddChild: (taskId: string) => void;
+  onImageAdd: (taskId: string, image: TaskImage) => void;
+  onPaste: (taskId: string, file: File) => void;
   // Touch event handlers for mobile drag and drop
   onTouchDragStart: (
     e: React.TouchEvent<HTMLDivElement>,

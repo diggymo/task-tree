@@ -1,8 +1,16 @@
+export interface TaskImage {
+  id: string;
+  s3Key: string;
+  presignedUrl: string;
+  uploadedAt: string;
+}
+
 export interface TaskNode {
   id: string;
   text: string;
   children: TaskNode[];
   completed?: boolean;
+  images?: TaskImage[];
 }
 
 export interface TaskRoot {

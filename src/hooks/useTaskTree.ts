@@ -23,6 +23,7 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleDelete,
     handleToggleComplete,
     handleAddChild,
+    handleImageAdd,
   } = useTaskCRUD({
     root,
     setRoot,
@@ -70,6 +71,7 @@ export function useTaskTree({ initialRoot, onDataChange }: UseTaskTreeOptions) {
     handleDelete,
     handleToggleComplete,
     handleAddChild,
+    handleImageAdd,
     handleDragStart,
     handleDragOver,
     handleDragLeave,

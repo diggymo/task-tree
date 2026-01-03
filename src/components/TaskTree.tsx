@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   borderRadius,
   colors,
@@ -10,6 +10,7 @@ import {
 } from '../constants/theme';
 import { TaskProvider } from '../contexts/TaskContext';
 import { useCanvasControls } from '../hooks/useCanvasControls';
+import { useImageUpload } from '../hooks/useImageUpload';
 import { useTaskTree } from '../hooks/useTaskTree';
 import type {
   SavedData,
@@ -17,6 +18,7 @@ import type {
   TaskRoot,
   ViewOffset,
 } from '../types/task';
+import { findTask } from '../utils/taskOperations';
 import SaveIndicator from './SaveIndicator';
 import TaskNode from './TaskNode';
 import ZoomIndicator from './ZoomIndicator';
@@ -57,6 +59,22 @@ export default function TaskTree({
     onViewChange: handleViewChange,
   });
 
+  const { uploadImage } = useImageUpload();
+
+  const handlePaste = useCallback(
+    async (taskId: string, file: File) => {
+      try {
+        const result = findTask(taskTree.root, taskId);
+        const currentImageCount = result?.node.images?.length || 0;
+        const image = await uploadImage(taskId, file, currentImageCount);
+        taskTree.handleImageAdd(taskId, image);
+      } catch (error) {
+        console.error('画像アップロードエラー:', error);
+      }
+    },
+    [taskTree, uploadImage],
+  );
+
   // TaskContext用の値をまとめる
   const taskContextValue = {
     focusedId: taskTree.focusedId,
@@ -74,6 +92,8 @@ export default function TaskTree({
     onDelete: taskTree.handleDelete,
     onToggleComplete: taskTree.handleToggleComplete,
     onAddChild: taskTree.handleAddChild,
+    onImageAdd: taskTree.handleImageAdd,
+    onPaste: handlePaste,
     onTouchDragStart: taskTree.handleTouchDragStart,
     onTouchDragMove: taskTree.handleTouchDragMove,
     onTouchDragEnd: taskTree.handleTouchDragEnd,

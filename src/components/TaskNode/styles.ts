@@ -245,4 +245,108 @@ export const taskNodeStyles = `
   .progress-text.completed {
     color: ${colors.success.default};
   }
+
+  .task-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: ${spacing.md};
+    margin-top: ${spacing.md};
+    margin-left: ${spacing['3xl']};
+  }
+
+  .task-image-thumbnail {
+    display: block;
+    width: 80px;
+    height: 80px;
+    padding: 0;
+    border-radius: ${borderRadius.lg};
+    overflow: hidden;
+    border: 1px solid ${colors.border.default};
+    background: transparent;
+    cursor: pointer;
+    transition: ${transitions.default};
+  }
+
+  .task-image-thumbnail:hover {
+    border-color: ${colors.primary};
+    box-shadow: ${shadows.taskNodeHover};
+    transform: scale(1.05);
+  }
+
+  .task-image-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .image-dialog {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: ${colors.background.dark};
+    border-radius: ${borderRadius.xl};
+    padding: ${spacing['2xl']};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: ${spacing.lg};
+  }
+
+  .image-dialog img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: ${borderRadius.lg};
+  }
+
+  .image-dialog-close {
+    position: absolute;
+    top: ${spacing.md};
+    right: ${spacing.md};
+    width: 32px;
+    height: 32px;
+    border-radius: ${borderRadius.full};
+    background: ${colors.background.medium};
+    border: 1px solid ${colors.border.default};
+    color: ${colors.text.primary};
+    font-size: ${fontSize.lg};
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: ${transitions.default};
+  }
+
+  .image-dialog-close:hover {
+    background: ${colors.background.darkest};
+    border-color: ${colors.text.secondary};
+  }
+
+  .image-dialog-link {
+    display: inline-block;
+    padding: ${spacing.md} ${spacing.xl};
+    background: ${colors.primary};
+    color: ${colors.text.white};
+    border-radius: ${borderRadius.md};
+    text-decoration: none;
+    font-size: ${fontSize.md};
+    transition: ${transitions.default};
+  }
+
+  .image-dialog-link:hover {
+    background: ${colors.primaryLight};
+  }
 `;

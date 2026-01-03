@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import type { TaskNode as TaskNodeType, TaskRoot } from '../types/task';
+import type {
+  TaskImage,
+  TaskNode as TaskNodeType,
+  TaskRoot,
+} from '../types/task';
 import {
   addChild,
   findTask,
@@ -21,6 +25,7 @@ export interface UseTaskCRUDReturn {
   handleDelete: (taskId: string) => void;
   handleToggleComplete: (taskId: string) => void;
   handleAddChild: (taskId: string) => void;
+  handleImageAdd: (taskId: string, image: TaskImage) => void;
 }
 
 export function useTaskCRUD({
@@ -109,10 +114,28 @@ export function useTaskCRUD({
     [setRoot, onDataChange, focusTask],
   );
 
+  const handleImageAdd = useCallback(
+    (taskId: string, image: TaskImage) => {
+      const result = findTask(root, taskId);
+      if (result) {
+        const currentImages = result.node.images || [];
+        setRoot((prev) => {
+          const newRoot = updateTask(prev, taskId, {
+            images: [...currentImages, image],
+          }) as TaskRoot;
+          onDataChange?.(newRoot);
+          return newRoot;
+        });
+      }
+    },
+    [root, setRoot, onDataChange],
+  );
+
   return {
     handleTextChange,
     handleDelete,
     handleToggleComplete,
     handleAddChild,
+    handleImageAdd,
   };
 }
