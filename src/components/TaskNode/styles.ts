@@ -258,7 +258,7 @@ export const taskNodeStyles = `
   }
 
   .progress-ring.completed .progress-ring-progress {
-    stroke: ${colors.success.default};
+    stroke: ${colors.success.darkLight};
   }
 
   .progress-ring-text {
@@ -270,6 +270,6 @@ export const taskNodeStyles = `
   }
 
   .progress-ring.completed .progress-ring-text {
-    color: ${colors.success.default};
+    color: ${colors.success.darkLight};
   }
 `;
