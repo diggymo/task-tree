@@ -1,9 +1,11 @@
 import type { SavedData, TaskRoot, ViewOffset, SaveStatus } from '../types/task';
 import { useTaskTree } from '../hooks/useTaskTree';
 import { useCanvasControls } from '../hooks/useCanvasControls';
+import { TaskProvider } from '../contexts/TaskContext';
 import TaskNode from './TaskNode';
 import ZoomIndicator from './ZoomIndicator';
 import SaveIndicator from './SaveIndicator';
+import { colors, spacing, borderRadius, fontSize, gradients, grid, fontFamily } from '../constants/theme';
 
 interface TaskTreeProps {
   initialData: SavedData;
@@ -39,6 +41,24 @@ export default function TaskTree({
     onViewChange: handleViewChange
   });
 
+  // TaskContext用の値をまとめる
+  const taskContextValue = {
+    focusedId: taskTree.focusedId,
+    draggedId: taskTree.draggedId,
+    dragOverId: taskTree.dragOverId,
+    dragPosition: taskTree.dragPosition,
+    inputRefs: taskTree.inputRefs,
+    onFocus: taskTree.handleFocus,
+    onTextChange: taskTree.handleTextChange,
+    onKeyDown: taskTree.handleKeyDown,
+    onDragStart: taskTree.handleDragStart,
+    onDragOver: taskTree.handleDragOver,
+    onDragLeave: taskTree.handleDragLeave,
+    onDrop: taskTree.handleDrop,
+    onDelete: taskTree.handleDelete,
+    onToggleComplete: taskTree.handleToggleComplete
+  };
+
   return (
     <div
       className={`task-tree-container ${canvasControls.isPanning ? 'panning' : ''}`}
@@ -67,31 +87,19 @@ export default function TaskTree({
           transform: `translate(${canvasControls.viewOffset.x}px, ${canvasControls.viewOffset.y}px) scale(${canvasControls.zoom})`
         }}
       >
-        <div className="tree-root">
-          {taskTree.root.children.map((task, index) => (
-            <TaskNode
-              key={task.id}
-              task={task}
-              depth={0}
-              isFirst={index === 0}
-              isLast={index === taskTree.root.children.length - 1}
-              focusedId={taskTree.focusedId}
-              draggedId={taskTree.draggedId}
-              dragOverId={taskTree.dragOverId}
-              dragPosition={taskTree.dragPosition}
-              onFocus={taskTree.handleFocus}
-              onTextChange={taskTree.handleTextChange}
-              onKeyDown={taskTree.handleKeyDown}
-              onDragStart={taskTree.handleDragStart}
-              onDragOver={taskTree.handleDragOver}
-              onDragLeave={taskTree.handleDragLeave}
-              onDrop={taskTree.handleDrop}
-              onDelete={taskTree.handleDelete}
-              onToggleComplete={taskTree.handleToggleComplete}
-              inputRefs={taskTree.inputRefs}
-            />
-          ))}
-        </div>
+        <TaskProvider value={taskContextValue}>
+          <div className="tree-root">
+            {taskTree.root.children.map((task, index) => (
+              <TaskNode
+                key={task.id}
+                task={task}
+                depth={0}
+                isFirst={index === 0}
+                isLast={index === taskTree.root.children.length - 1}
+              />
+            ))}
+          </div>
+        </TaskProvider>
       </div>
 
       <ZoomIndicator
@@ -113,11 +121,11 @@ export default function TaskTree({
         .task-tree-container {
           width: 100%;
           height: 100vh;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+          background: ${gradients.containerBackground};
           overflow: hidden;
           position: relative;
           cursor: default;
-          font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: ${fontFamily};
         }
 
         .task-tree-container:active {
@@ -139,41 +147,41 @@ export default function TaskTree({
           top: 0;
           left: 0;
           right: 0;
-          padding: 20px 30px;
-          background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
+          padding: ${spacing['4xl']} ${spacing['6xl']};
+          background: ${gradients.headerBackground};
           z-index: 100;
           pointer-events: none;
         }
 
         .header h1 {
-          margin: 0 0 12px 0;
-          font-size: 24px;
+          margin: 0 0 ${spacing.xl} 0;
+          font-size: ${fontSize.xl};
           font-weight: 700;
-          color: #f8fafc;
+          color: ${colors.text.lightest};
           letter-spacing: 0.05em;
         }
 
         .shortcuts {
           display: flex;
-          gap: 20px;
+          gap: ${spacing['4xl']};
           flex-wrap: wrap;
         }
 
         .shortcuts span {
-          font-size: 12px;
-          color: #94a3b8;
+          font-size: ${fontSize.md};
+          color: ${colors.text.secondary};
         }
 
         .shortcuts kbd {
           display: inline-block;
-          padding: 2px 8px;
+          padding: ${spacing.xs} ${spacing.md};
           background: rgba(51, 65, 85, 0.8);
-          border-radius: 4px;
+          border-radius: ${borderRadius.md};
           font-family: inherit;
-          font-size: 11px;
-          color: #e2e8f0;
+          font-size: ${fontSize.sm};
+          color: ${colors.text.light};
           margin-right: 6px;
-          border: 1px solid #475569;
+          border: 1px solid ${colors.border.default};
         }
 
         .canvas {
@@ -200,9 +208,9 @@ export default function TaskTree({
           right: 0;
           bottom: 0;
           background-image:
-            linear-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(51, 65, 85, 0.3) 1px, transparent 1px);
-          background-size: 40px 40px;
+            linear-gradient(${grid.lineColor} 1px, transparent 1px),
+            linear-gradient(90deg, ${grid.lineColor} 1px, transparent 1px);
+          background-size: ${grid.size} ${grid.size};
           pointer-events: none;
         }
 
