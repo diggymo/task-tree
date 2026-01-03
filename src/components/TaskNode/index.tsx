@@ -63,7 +63,8 @@ const TaskNode = React.memo(function TaskNode({
     if (progress === 0) return undefined;
 
     // 右側から緑色に塗る（to left方向のグラデーション）
-    const greenColor = isCompleted ? '#22c55e' : '#86efac'; // 完了時は濃い緑、途中は薄い緑
+    // 完了時の背景色と同じ色系統を使用
+    const greenColor = isCompleted ? '#166534' : '#15803d';
     return {
       background: `linear-gradient(to left, ${greenColor} ${progress}%, transparent ${progress}%)`
     };
