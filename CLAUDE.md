@@ -13,7 +13,19 @@ pnpm dev          # Start Vite dev server (port 1420)
 pnpm build        # TypeScript check + Vite production build
 pnpm tauri dev    # Full Tauri development (frontend + Rust backend)
 pnpm tauri build  # Create production desktop binary
+pnpm validate     # Run biome check (lint + format check)
+pnpm fix          # Auto-fix biome errors
 ```
+
+## Pre-commit Checklist
+
+コミット前に必ず以下を実行してください：
+
+```bash
+pnpm validate     # biomeによるlint・フォーマットチェック
+```
+
+エラーがある場合は `pnpm fix` で自動修正できます。
 
 ## Architecture
 
