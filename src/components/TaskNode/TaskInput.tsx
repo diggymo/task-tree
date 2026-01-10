@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 interface TaskInputProps {
   taskId: string;
@@ -24,6 +24,8 @@ export const TaskInput = React.memo(function TaskInput({
   onPaste,
   style,
 }: TaskInputProps) {
+  const hiddenDivRef = useRef<HTMLDivElement>(null);
+
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const items = e.clipboardData?.items;
@@ -44,19 +46,29 @@ export const TaskInput = React.memo(function TaskInput({
   );
 
   return (
-    <textarea
-      ref={(el) => {
-        if (inputRefs) inputRefs.current[taskId] = el;
-      }}
-      value={text}
-      onChange={(e) => onTextChange(taskId, e.target.value)}
-      onKeyDown={(e) => onKeyDown(e, taskId)}
-      onFocus={() => onFocus(taskId)}
-      onPaste={handlePaste}
-      placeholder="タスクを入力..."
-      className="task-input"
-      rows={1}
-      style={style}
-    />
+    <div className="task-input-wrapper">
+      <div ref={hiddenDivRef} className="task-input-hidden">
+        {text || 'タスクを入力...'}
+        {'\u200b'}
+      </div>
+      <textarea
+        ref={(el) => {
+          if (inputRefs) inputRefs.current[taskId] = el;
+        }}
+        value={text}
+        onChange={(e) => {
+          onTextChange(taskId, e.target.value);
+          if (hiddenDivRef.current) {
+            hiddenDivRef.current.textContent = `${e.target.value}\u200b`;
+          }
+        }}
+        onKeyDown={(e) => onKeyDown(e, taskId)}
+        onFocus={() => onFocus(taskId)}
+        onPaste={handlePaste}
+        placeholder="タスクを入力..."
+        className="task-input"
+        style={style}
+      />
+    </div>
   );
 });

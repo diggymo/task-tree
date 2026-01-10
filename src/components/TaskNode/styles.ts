@@ -132,20 +132,42 @@ export const taskNodeStyles = `
     cursor: grabbing;
   }
 
-  .task-input {
+  .task-input-wrapper {
     flex: 1;
+    position: relative;
+    min-width: 0;
+  }
+
+  .task-input-hidden {
+    visibility: hidden;
+    min-height: 1.5em;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 16px;
+    font-family: ${fontFamily};
+    line-height: 1.5;
+    padding: ${spacing.xs} 0;
+  }
+
+  .task-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: transparent;
     border: none;
     outline: none;
     font-size: 16px; /* iOS auto-zoom prevention: must be 16px+ */
     color: ${colors.text.primary};
     font-family: ${fontFamily};
-    min-width: 0;
     resize: none;
     overflow: hidden;
     line-height: 1.5;
     padding: ${spacing.xs} 0;
-    field-sizing: content;
+    word-break: break-word;
+    overflow-wrap: break-word;
     transition: background 0.3s ease;
     border-radius: ${borderRadius.md};
   }
