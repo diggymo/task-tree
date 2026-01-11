@@ -176,6 +176,7 @@ export default function LeafTaskListView({
 
         .list-content {
           flex: 1;
+          min-height: 0;
           overflow-y: auto;
           padding: ${spacing['4xl']} ${spacing['6xl']};
         }
