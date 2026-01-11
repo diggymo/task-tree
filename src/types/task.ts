@@ -33,6 +33,7 @@ export interface SavedData {
 
 export type DragPosition = 'before' | 'after' | 'child' | null;
 export type SaveStatus = 'saved' | 'saving' | 'pending' | 'error';
+export type ViewMode = 'tree' | 'list';
 
 export interface TaskSearchResult {
   node: TaskNode;

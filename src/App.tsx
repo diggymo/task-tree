@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
+import LeafTaskListView from './components/LeafTaskListView';
 import LoadingScreen from './components/LoadingScreen';
 import RestoreDialog from './components/RestoreDialog';
 import TaskTree from './components/TaskTree';
 import { useDebouncedSave } from './hooks/useDebouncedSave';
 import { exportToFile, importFromFile } from './hooks/useFileStorage';
-import type { SavedData, TaskRoot, ViewOffset } from './types/task';
+import type { SavedData, TaskRoot, ViewMode, ViewOffset } from './types/task';
 import { createInitialData } from './types/task';
 
 // 単一のstateオブジェクトとして状態を定義
@@ -15,6 +16,7 @@ type AppState =
 
 function App() {
   const [appState, setAppState] = useState<AppState>({ phase: 'loading' });
+  const [viewMode, setViewMode] = useState<ViewMode>('tree');
   const { saveStatus, scheduleSave } = useDebouncedSave();
 
   const handleDataLoaded = (data: SavedData | null) => {
@@ -105,10 +107,20 @@ function App() {
       );
 
     case 'ready':
-      return (
+      return viewMode === 'tree' ? (
         <TaskTree
           initialData={appState.initialData}
           onDataChange={handleDataChange}
+          onViewModeChange={() => setViewMode('list')}
+          saveStatus={saveStatus}
+          onExport={handleExport}
+          onImport={handleImport}
+        />
+      ) : (
+        <LeafTaskListView
+          initialData={appState.currentData}
+          onDataChange={handleDataChange}
+          onViewModeChange={() => setViewMode('tree')}
           saveStatus={saveStatus}
           onExport={handleExport}
           onImport={handleImport}

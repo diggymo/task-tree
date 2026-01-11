@@ -26,6 +26,7 @@ import ZoomIndicator from './ZoomIndicator';
 interface TaskTreeProps {
   initialData: SavedData;
   onDataChange?: (root: TaskRoot, viewOffset: ViewOffset, zoom: number) => void;
+  onViewModeChange?: () => void;
   saveStatus?: SaveStatus;
   onExport?: () => void;
   onImport?: () => void;
@@ -34,6 +35,7 @@ interface TaskTreeProps {
 export default function TaskTree({
   initialData,
   onDataChange,
+  onViewModeChange,
   saveStatus = 'saved',
   onExport,
   onImport,
@@ -115,6 +117,32 @@ export default function TaskTree({
       <div className="header">
         <div className="header-row">
           <h1>タスクツリー</h1>
+          {onViewModeChange && (
+            <button
+              type="button"
+              className="view-mode-toggle"
+              onClick={onViewModeChange}
+              title="リスト表示に切り替え"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                role="img"
+                aria-label="リスト表示"
+              >
+                <line x1="8" y1="6" x2="21" y2="6" />
+                <line x1="8" y1="12" x2="21" y2="12" />
+                <line x1="8" y1="18" x2="21" y2="18" />
+                <line x1="3" y1="6" x2="3.01" y2="6" />
+                <line x1="3" y1="12" x2="3.01" y2="12" />
+                <line x1="3" y1="18" x2="3.01" y2="18" />
+              </svg>
+            </button>
+          )}
           <button
             type="button"
             className="help-toggle"
@@ -257,6 +285,26 @@ export default function TaskTree({
         .help-toggle:hover {
           background: rgba(71, 85, 105, 0.9);
           border-color: ${colors.text.secondary};
+        }
+
+        .view-mode-toggle {
+          width: 32px;
+          height: 32px;
+          border-radius: ${borderRadius.lg};
+          border: 1px solid ${colors.border.default};
+          background: rgba(51, 65, 85, 0.8);
+          color: ${colors.text.light};
+          cursor: pointer;
+          pointer-events: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s, border-color 0.2s;
+        }
+
+        .view-mode-toggle:hover {
+          background: ${colors.primary};
+          border-color: ${colors.primary};
         }
 
         .shortcuts {

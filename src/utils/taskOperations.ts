@@ -116,3 +116,21 @@ export const getCompletionStats = (
 
   return { completed, total };
 };
+
+/**
+ * ツリーから末端タスク（子を持たないタスク）を収集する
+ */
+export const collectLeafTasks = (node: TaskNode | TaskRoot): TaskNode[] => {
+  const leaves: TaskNode[] = [];
+
+  const traverse = (current: TaskNode) => {
+    if (current.children.length === 0) {
+      leaves.push(current);
+    } else {
+      current.children.forEach(traverse);
+    }
+  };
+
+  node.children.forEach(traverse);
+  return leaves;
+};
